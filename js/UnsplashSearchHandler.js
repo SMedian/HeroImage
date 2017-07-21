@@ -14,8 +14,14 @@ function UnsplashSearchHandler(keywords) {
         return vars.nextPage;
     }
     this.isSearching = () => { return vars.isSearching }
-    this.startSearch = () => vars.isSearching = true
-    this.endSearch = () => vars.isSearching = false
+    this.startSearch = () => {
+        vars.isSearching = true
+        NProgress.start();
+    }
+    this.endSearch = () => {
+        vars.isSearching = false
+        NProgress.done();
+    }
     this.canSearchMore = () => { return vars.nextPage < vars.totalPages }
     this.hasResults = () => { return vars.results.length }
 
@@ -36,33 +42,14 @@ function UnsplashSearchHandler(keywords) {
             }
             vars.resultIds[image.id] = true
             vars.results.push(image)
-            addResultHTMLToResults(type, image)
         })
-        adjustResultsDims(type)
-        if(this.canSearchMore()) {
-            $('.js-' + type + 'ImageSearchLoadMoreButton').show()
-        }
+        UnsplashSearchHandler.ngScopeTimeout(() => {
+            UnsplashSearchHandler.ngScope.imageSearchResultsTypeMap[type] = vars.results
+        })
     }
 
-    this.showAllResults = (type) => {
-        if(!vars.results.length) return
-        $('.js-' + type + 'ImageSearchResults').html('')
-        vars.results.forEach((image) => {
-            addResultHTMLToResults(type, image)
-        })
-        adjustResultsDims(type)
-    }
-    const adjustResultsDims = (type) => {
-        $('.js-' + type + 'ImageSearchResults').css('height', UnsplashSearchHandler.resultHeight * vars.results.length)
-    }
-    const addResultHTMLToResults = (type, image) => {
-        var imgHTML = '<img class="js-' + type + 'ImageSearchResultClickToSelect" src="' + image.thumbUrl + '" data-regular-url="' + image.url + '" style="width:100%;"/>'
-        var attributionLinkHTML = '<a class="link text-t1" style="position: relative; height 10px; width:100%; background:#fff; bottom:20px" href="https://unsplash.com/'+image.user.handle+'?utm_source=SMedianHeroImage&utm_medium=referral&utm_campaign=api-credit">' + image.user.name + ' / Unsplash</a>'
-        $('.js-' + type + 'ImageSearchResults').append('<div style="width:100%;">' + imgHTML + attributionLinkHTML + '</div>' )
-        $('.js-' + type + 'ImageSearchResultClickToSelect').unbind();
-        $('.js-' + type + 'ImageSearchResultClickToSelect').click(function() {
-            handleSelectSearchResultImageForType(type, $(this).data('regular-url'))
-        })
+    this.getResults = () => {
+        return vars.results
     }
 }
 
@@ -72,8 +59,11 @@ UnsplashSearchHandler.lastSearchType = { 'base': {}, 'overlay': {} }
 UnsplashSearchHandler.resultWidth = 50
 UnsplashSearchHandler.resultHeight = 50
 
-UnsplashSearchHandler.handleSearchByType = function(type, isFromKeyup) {
-    var keywords = $('.js-' + type + 'ImageSearchInput').val()
+UnsplashSearchHandler.handleSearchByType = function(type, opts) {
+    if(!opts) opts = {}
+    const isFromKeyup = opts.isFromKeyup
+    var keywords = opts.keywords
+
     if(!keywords || keywords.trim().length < 3) {
         return
     }
@@ -119,6 +109,10 @@ UnsplashSearchHandler.handleSearchByType = function(type, isFromKeyup) {
     handler.startSearch()
     UnsplashSearchHandler.lastSearchType[type].keywords = keywords
     UnsplashSearchHandler.lastSearchType[type].wasLast = true
+
+    UnsplashSearchHandler.ngScope.getCurrentSearchHandler = function() {
+        return handler
+    }
     $('.js-' + type + 'ImageSearchExhausted').show()
     $.get(endpoint, function(data, status) {
         if(status != "success") {
@@ -144,29 +138,23 @@ UnsplashSearchHandler.handleResultsFor = (type, keywords, responseData) => {
     handler.endSearch()
 }
 
-UnsplashSearchHandler.attachSearchJQueries = function() {
-    $('.js-baseImageSearchButton').click(() => {
-		UnsplashSearchHandler.handleSearchByType('base')	
-	})
+UnsplashSearchHandler.attachSearchJQueries = function(ngScope, ngTimeout) {
+    UnsplashSearchHandler.ngScope = ngScope
+    UnsplashSearchHandler.ngScopeTimeout = ngTimeout
+    
+    UnsplashSearchHandler.ngScope.searchImage = function(isFromKeyup) {
+        UnsplashSearchHandler.handleSearchByType(UnsplashSearchHandler.ngScope.currentImageSearchType, {
+            keywords: $('.js-imageSearchInput').val(),
+            isFromKeyup: isFromKeyup
+        })	
+	}
 
-	$('.js-baseImageSearchLoadMoreButton').click(() => {
-		UnsplashSearchHandler.handleSearchByType('base')	
-	})
-
-	$('.js-overlayImageSearchInput').keyup(() => {
-		if(UnsplashSearchHandler.overlayImageSearchTimeout) {
-			clearTimeout(UnsplashSearchHandler.overlayImageSearchTimeout)
+	$('.js-imageSearchInput').keyup(() => {
+		if(UnsplashSearchHandler.imageSearchTimeout) {
+			clearTimeout(UnsplashSearchHandler.imageSearchTimeout)
 		}
-		UnsplashSearchHandler.overlayImageSearchTimeout = setTimeout(() => {
-			UnsplashSearchHandler.handleSearchByType('overlay', true)
+		UnsplashSearchHandler.imageSearchTimeout = setTimeout(() => {
+			UnsplashSearchHandler.handleSearchByType(UnsplashSearchHandler.ngScope.currentImageSearchType, true)
 		}, 1000)	
-	})
-
-	$('.js-overlayImageSearchButton').click(() => {
-		UnsplashSearchHandler.handleSearchByType('overlay')	
-	})
-
-	$('.js-overlayImageSearchLoadMoreButton').click(() => {
-		UnsplashSearchHandler.handleSearchByType('overlay')	
 	})
 }

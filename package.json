@@ -1,21 +1,21 @@
 {
   "name": "image-editor-ui-drag-and-drop",
-	"version": "1.0.0",
-	"description": "A tool by SMedian for publishers to create quick hero images for their publication articles.",
-	"main": "server.js",
+  "version": "1.0.0",
+  "description": "A tool by SMedian for publishers to create quick hero images for their publication articles.",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "bootstrap": "^3.3.6",
-    "jquery": "^2.2.3",
     "body-parser": "^1.13.3",
-		"express": "^4.13.3",
-		"cron":"^1.1.0",
-		"nodemailer":"0.7",
-		"socket.io": "1.0",
-		"time-ago": "0.1.0"
+    "bootstrap": "^3.3.6",
+    "cron": "^1.1.0",
+    "express": "^4.13.3",
+    "jquery": "^2.2.3",
+    "nodemailer": "0.7",
+    "rangeslider.js": "^2.3.1",
+    "socket.io": "1.0",
+    "time-ago": "0.1.0"
   }
 }

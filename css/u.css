@@ -10,6 +10,11 @@
     display: table-cell!important;
 }
 
+.u-size16x16 {
+    width: 16px!important;
+    height: 16px!important;
+}
+
 .u-size50x50 {
     width: 60px!important;
     height: 60px!important;

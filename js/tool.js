@@ -102,12 +102,14 @@ function onSetOverlayImage() {
 	toggleOverlayImageDragDrop();
 	$('.js-overlayImageChoiceControls').hide()
 	$('.js-overlayImageControls').show()
+	$('.js-mergedImageControlOverlayContainer').show()
 	recreateMergedImage()
 }
 
 function clearOverlayImage() {
 	overlayImageElement.attr('src', '');
 	$('.js-overlayImageControls').hide()
+	$('.js-mergedImageControlOverlayContainer').hide()
 	$('.js-overlayImageChoiceControls').show()
 	recreateMergedImage()
 }
@@ -131,12 +133,16 @@ function getMergedImageUrl(onSuccess) {
 	})
 }
 
+var inLineToRender = 0
 function getMergedImageCanvasFromHTML2Canvas(onRendered) {
 	$('#merged-image-creation-canvas').show()
+	$('#merged-image-creation-canvas').css('opacity', '1')
+	inLineToRender++
 	html2canvas($('#merged-image-creation-canvas'), {
 		onrendered: (canvas) => {
 			onRendered(canvas)
-			$('#merged-image-creation-canvas').hide()
+			inLineToRender--
+			if(inLineToRender < 1) $('#merged-image-creation-canvas').css('opacity', '0.01')
 		},
     	useCORS: true
 	})
@@ -156,11 +162,16 @@ function recreateMergedImage() {
 	$('.js-mergeImageOverlay').css('width', width)
 	$('.js-mergeImageOverlay').css('height', height)
 	
-	getMergedImageCanvasFromHTML2Canvas(function(canvas) {
-		//$('.js-mergedImageToEdit').html(canvas);
+	getMergedImageUrl(function(url) {
 		document.getElementById('merged-image-to-edit').innerHTML = '';
-		document.getElementById('merged-image-to-edit').src = canvas.toDataURL()
+		document.getElementById('merged-image-to-edit').src = url
+		$('.js-mergedImageToEdit').show()
 	})
+}
+
+function updateMergeImageOverlayOpacity(opacity) {
+	$('.js-mergeImageOverlay').css('opacity', opacity || 0.2)
+	recreateMergedImage()
 }
 
 //=======GENEREAL FUNCTIONS
@@ -197,7 +208,9 @@ var baseImageElement, baseImageDropArea,
 	originalBaseImageSrc /*assigned when image file is dropped*/, 
 	currentBaseImage /*assigned when the Edit button is clicked*/, 
 	originalOverlayImageSrc /*assigned when image file is dropped*/, 
-	currentBaseImage /*assigned when the Edit button is clicked*/, 
+	currentOverlayImage /*assigned when the Edit button is clicked*/, 
+	originalMergedImageSrc /*assigned when image file is dropped*/, 
+	currentMergedImage /*assigned when the Edit button is clicked*/, 
 	creativeSDKImageEditor
 
 $(document).ready(function() {
@@ -214,6 +227,7 @@ $(document).ready(function() {
 		onSave: function(imageID, newURL) {
 			if(currentImageEditType == 'base') currentBaseImage.src = newURL;
 			if(currentImageEditType == 'overlay') currentOverlayImage.src = newURL;
+			if(currentImageEditType == 'merged') currentMergedImage.src = newURL;
 			creativeSDKImageEditor.close();
 			console.log(newURL);
 		},
@@ -225,6 +239,9 @@ $(document).ready(function() {
 	});
 
 	$('#table-editor').css('height',$(window).height())
+	// Initialize a new plugin instance for all
+    // e.g. $('input[type="range"]') elements.
+    $('input[type="range"]').rangeslider();
 
 	attachBaseImageEditQueries()
 	attachOverlayImageEditQueries()
@@ -254,9 +271,6 @@ $(document).ready(function() {
 			});
 		})
 	});
-
-	//SEARCH------
-	UnsplashSearchHandler.attachSearchJQueries()
 });
 
 function attachBaseImageEditQueries() {

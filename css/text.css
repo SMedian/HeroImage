@@ -49,6 +49,11 @@ h1, h2, h3, h4 {
   outline: none;
 }
 
+:focus {
+  outline-color: transparent;
+  outline-style: none;
+}
+
 .clean-input--borderBottomOnly {
     border-top: none;
     border-left: none;
