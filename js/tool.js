@@ -12,7 +12,6 @@ function setBaseImageFromFile(file) {
 }
 
 function setBaseImageFromUrl(url) {
-	baseImageElement[0].crossOrigin = "anonymous";
 	baseImageElement.attr('src', url);
 	originalBaseImageSrc = baseImageElement.attr('src');
 	onSetBaseImage()
@@ -88,7 +87,6 @@ function toggleOverlayImageDragDrop() {
 }
 
 function setOverlayImageFromFile(file) {
-	overlayImageElement[0].crossOrigin = "anonymous";
 	overlayImageElement.attr('src', window.URL.createObjectURL(file));
 	originalOverlayImageSrc = overlayImageElement.attr('src');
 	onSetOverlayImage()
@@ -209,9 +207,6 @@ $(document).ready(function() {
 
 	overlayImageElement = $('.js-overlayImageToEdit').hide();
 	overlayImageDropArea = $('.js-overlayImageDropArea');
-
-	baseImageElement.crossOrigin = "anonymous";
-	overlayImageElement.crossOrigin = "anonymous";
 
 	// Image Editor configuration
 	creativeSDKImageEditor = new Aviary.Feather({
