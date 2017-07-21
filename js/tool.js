@@ -155,7 +155,7 @@ function recreateMergedImage() {
 	$('.js-mergeImageOverlay').attr('src', overlaySrc);
 	$('.js-mergeImageOverlay').css('width', width)
 	$('.js-mergeImageOverlay').css('height', height)
-	$('.js-mergeImageOverlay').css('opacity', '0.1')
+	
 	getMergedImageCanvasFromHTML2Canvas(function(canvas) {
 		//$('.js-mergedImageToEdit').html(canvas);
 		document.getElementById('merged-image-to-edit').innerHTML = '';
