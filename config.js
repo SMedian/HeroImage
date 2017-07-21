@@ -1,0 +1,1 @@
+var configObj = { apiKey: '54646550a1584720a0df59438878a37f' };

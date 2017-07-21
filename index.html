@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hero Image Creator | A SMedian Publishing Tool</title>
+	<!-- for Google -->
+	<meta name="description" content="A tool by SMedian.com for publishers to create quick hero images for their publication articles." />
+	<meta name="keywords" content="SMedian Publishing Tools, SMedian, Publishing, Tools, Publishing Tools, Hero Image, SMedian.com, SMedian Hero Image Tool, Image creator, Overlay Creator" />
+
+	<meta name="author" content="Lincoln W Daniel" />
+	<meta name="copyright" content="Lincoln W Daniel" />
+	<meta name="application-name" content="Hero Image Creator" />
+
+	<!-- for Facebook -->          
+	<meta property="og:title" content="Hero Image Creator | A SMedian Publishing Tool" />
+	<meta property="og:type" content="article" />
+	<meta property="og:image" content="img/logo.png" />
+	<meta property="og:url" content="" />
+	<meta property="og:description" content="A tool by SMedian.com for publishers to create quick hero images for their publication articles." />
+
+	<!-- for Twitter -->          
+	<meta name="twitter:card" content="A tool by SMedian.com for publishers to create quick hero images for their publication articles." />
+	<meta name="twitter:title" content="Hero Image Creator | A SMedian Publishing Tool" />
+	<meta name="twitter:description" content="A tool by SMedian.com for publishers to create quick hero images for their publication articles." />
+	<meta name="twitter:image" content="img/logo.png" />
+
+	<link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+<body>
+	<div class="row" style="background:linear-gradient(120deg,#102938 25%,#0C132B 85%); color: #fff">
+		<div style="padding:20px">
+			<div class="col-md-3">
+				<a href="//smedian.com">
+					<img src="http://smedian.com/img/logo.png" style="display:inline; width:48px; margin-top: -15px;"/>
+				</a>
+				<div style="display:inline-block;">
+					<h1 class="heading" style="display:inline; margin-top:20px; color:#fff">Hero Image Creator</h1>
+					<a href="//smedian.com" target="_blank" class="clean-text text-s link" style="display:block">A SMedian Publishing Tool</a>
+				</div>
+				
+			</div>
+			<div class="col-md-4">
+				<button id="about-this-demo-button" data-toggle="modal" data-target="#more-info-modal" class="clean-button clean-button--link" style="color:#fff">
+					Help
+				</button>
+				<button class="js-downloadImageButton clean-button clean-button--link" style="color:#fff">
+					Download
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<table id="table-editor" style="width:100%">
+		<tr class="container-editor">
+			<td style="width:20%; background: #272c33; color:#fff; padding:10px; vertical-align: top;">
+				<div class="">
+					<h3>Base Image</h3>
+					<div class="js-baseImageChoiceControls">
+						<button id="edit-image-button" class="js-clickToUploadBaseImage btn btn-primary btn-block button-panel" 
+							style="background:white; color:#0C132B; text-align:left" title="Upload an image from your computer">
+							<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Upload Image
+						</button>
+						<div id="custom-search-input">
+                            <div class="input-group">
+                                <input type="text" class="js-baseImageSearchInput search-query form-control" placeholder="Search stock images ..." />
+                                <span class="input-group-btn">
+                                    <button class="js-baseImageSearchButton btn btn-danger" type="button">
+                                        <span class=" glyphicon glyphicon-search"></span>
+                                    </button>
+                                </span>
+                            </div>
+						</div>
+						<div class="js-baseImageSearchResultsContainer" style="height:100%;">
+							<div class="js-baseImageSearchResults" style="height:50px; overflow-y:scroll"></div>
+							<button class="js-baseImageSearchLoadMoreButton clean-button clean-button--solid-white" style="display:none">Load More</button>
+						</div>
+					</div>
+					<div class="js-baseImageControls" style="display:none">
+						<div>
+							<button id="edit-image-button" class="js-editBaseImageButton btn btn-primary btn-block button-panel" style="text-align:left;">
+								<span class="glyphicon glyphicon-pencil pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Edit Image
+							</button>
+						</div>
+						<div>
+							<button class="js-resetBaseImageButton btn btn-warning btn-block button-panel" style="text-align:left;">
+								<span class="glyphicon glyphicon-repeat pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Undo Edits
+							</button>
+						</div>
+						<div >
+							<button class="js-clearBaseImageButton btn btn-danger btn-block button-panel" title="Clear Current Image to Start Over" style="text-align:left;">
+								<span class="glyphicon glyphicon-remove pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Clear Image
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="js-overlayImageContainer" style="margin-top:30px; display:none">
+					<h3>Overlay Image</h3>
+					<div>
+						<button id="edit-image-button" class="js-addOverlayImageButton btn btn-primary btn-block button-panel" style="background:white; color:#0C132B; text-align:left;">
+							<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;" aria-hidden="true"></span> Upload Image
+						</button>
+						<div id="custom-search-input">
+                            <div class="input-group">
+                                <input type="text" class="js-overlayImageSearchInput search-query form-control" placeholder="Search stock images ..." />
+                                <span class="input-group-btn">
+                                    <button class="js-overlayImageSearchButton btn btn-danger" type="button">
+                                        <span class=" glyphicon glyphicon-search"></span>
+                                    </button>
+                                </span>
+                            </div>
+						</div>
+						<div class="js-overlayImageSearchResultsContainer" style="height:100%;">
+							<div class="js-overlayImageSearchResults" style="height:50px; overflow-y:scroll"></div>
+							<button class="js-overlayImageSearchLoadMoreButton clean-button clean-button--solid-white" style="display:none">Load More</button>
+						</div>
+					</div>
+				</div>
+			</td>
+
+			<td class="container" style="width:80%; vertical-align: top; padding-bottom:30px">
+				<div>
+					<h2 class="text-m">Create Quick Hero Images for Your Articles</h2>
+					<p class="text-s">
+						We have powerful editing tools to make it easy and fun.
+					</p>
+					<p class="clean-text" style="max-width:60%">
+						Choose a base image to edit from your computer or search free stock photos. You can then add an overlay image. If you add an overlay image, you'll need to scroll down to see the final image. Once you are done, download your image to your computer.
+					</p>
+				</div>
+				<div class="js-baseImageEditorPane">
+					<h3>Base Image <span class="js-baseImageWithOverlayMark clean-text text-s" style="display:none">With Overlay</span></h3>
+					<input class="js-clickToUploadBaseImageInput" style="display:none" type="file">
+					<div id="drop-area" class="js-baseImageDropArea clickable">
+						<p>Drop your base image here!</p>
+						<p>(or click to upload)</p>
+					</div>
+					<img id="editable-image" class="js-baseImageToEdit img-responsive">
+				</div>
+				<div class="js-overlayImageEditorPane" style="margin-top:50px; display:none">
+					<h3>Overlay Image</h3>
+					<input class="js-clickToUploadOverlayImageInput" style="display:none" type="file">
+					<div id="drop-area" class="js-overlayImageDropArea clickable">
+						<p>Drop your overlay image here!</p>
+						<p>(or click to upload)</p>
+					</div>
+					<img id="editable-image" class="js-overlayImageToEdit img-responsive">
+				</div>
+			</td>
+		</tr>
+
+	</table> <!-- end .row -->
+
+
+	<div id="more-info-modal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+	    	<div class="modal-content">
+	      		
+	      		<div class="modal-header">
+	        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        		<h4 class="modal-title">How Do I Use This?</h4>
+	      		</div>
+
+	      		<div class="modal-body">
+					<h3>Create Quick Header Image for Your Article</h3>
+					<ol>
+						<li>Start by choosing a base image and editing it as desired.</li>
+						<li>
+							Don't Want to Overlay Another Image?
+							<ul>
+								<li>You're done! Click Download.</li>
+							</ul>
+						</li>
+						<li>
+							Want to Overlay Another Image?
+							<ol>
+								<li>Choose an overlay image and edit it as desired.</li>
+								<li>Click the <b>Merge Images</b> button to overlay your overlay image over your base image.</li>
+								<li>Choose an opacity for your overlay image.</li>
+								<li>Scroll down and download the finished merged image.</li>
+							</ol>
+						</li>
+					</ol>
+	      		</div>
+
+	      		<div class="modal-footer">
+	        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		    	</div>
+
+	    	</div><!-- /.modal-content -->
+	  	</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	<script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+	<script type="text/javascript" src="node_modules/bootstrap/js/modal.js"></script>
+	<script type="text/javascript" src="https://dme0ih8comzn4.cloudfront.net/imaging/v3/editor.js"></script>
+	<script type="text/javascript" src="config.js"></script>
+	<script type="text/javascript" src="tool.js"></script>
+</body>
+</html>

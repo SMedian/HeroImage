@@ -1,0 +1,89 @@
+.u-floatRight {
+    float: right!important;
+}
+
+.u-marginLeft20 {
+    margin-left: 20px!important;
+}
+
+.u-tableCell {
+    display: table-cell!important;
+}
+
+.u-size50x50 {
+    width: 60px!important;
+    height: 60px!important;
+}
+
+.u-size60x60 {
+    width: 60px!important;
+    height: 60px!important;
+}
+
+.u-margin20 {
+    margin: 20px!important;
+}
+
+.u-marginTop5 {
+    margin-top: 5px!important;
+}
+
+.u-marginTop10 {
+    margin-top: 10px!important;
+}
+
+.u-marginLeft0 {
+    margin-left: 0px!important;
+}
+
+.u-colorLightGrey {
+    color: rgba(0,0,0,.44) !important
+}
+
+.u-colorDarkGrey {
+    color: rgba(0,0,0,.8) !important
+}
+
+.u-fontWeight400 {
+    font-weight: 400 !important
+}
+
+.u-fontSize12px {
+    font-size: 12px !important
+}
+
+.u-fontSize10px {
+    font-size: 10px !important
+}
+
+.u-borderBottom {
+    border-bottom: 1px solid rgba(0,0,0, .05) !important
+}
+
+.u-borderLeft {
+    border-left: 1px solid rgba(0,0,0, .05) !important
+}
+
+.u-noBorderBottom {
+    border-bottom: 0px !important
+}
+
+.u-borderBottom--colorDarkGrey {
+    border-bottom: 1px solid rgba(0,0,0,.8) !important
+}
+
+.u-colorLightGreen {
+    color: #1abc9c !important
+}
+
+.u-colorDarkGreen {
+    color: #16a085 !important
+}
+
+.u-colorLightRed {
+    color: #e74c3c !important
+}
+
+.u-colorDarkRed {
+    color: #c0392b !important
+}
