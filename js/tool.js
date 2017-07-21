@@ -132,31 +132,34 @@ function getMergedImageUrl(onSuccess) {
 }
 
 function getMergedImageCanvasFromHTML2Canvas(onRendered) {
-	html2canvas($('#js-mergedImageCreationCanvas'), {
-		onrendered: onRendered
+	$('#merged-image-creation-canvas').show()
+	html2canvas($('#merged-image-creation-canvas'), {
+		onrendered: (canvas) => {
+			onRendered(canvas)
+			$('#merged-image-creation-canvas').hide()
+		},
+    	useCORS: true
 	})
 }
 
 function recreateMergedImage() {
-	//$('.js-mergedImageCreationCanvas').show()
 	const baseSrc =  $(baseImageElement).attr('src')
 	const overlaySrc =  $(overlayImageElement).attr('src')
 	
 	$('.js-mergeImageBase').attr('src',baseSrc);
 	const width = $('.js-mergeImageBase').css('width')
 	const height = $('.js-mergeImageBase').css('height')
-	$('.js-mergedImageCreationCanvas').css('width', width)
-	$('.js-mergedImageCreationCanvas').css('height', height)
-debugger
+	$('#merged-image-creation-canvas').css('width', width)
+	$('#merged-image-creation-canvas').css('height', height)
+
 	$('.js-mergeImageOverlay').attr('src', overlaySrc);
 	$('.js-mergeImageOverlay').css('width', width)
 	$('.js-mergeImageOverlay').css('height', height)
 	$('.js-mergeImageOverlay').css('opacity', '0.1')
 	getMergedImageCanvasFromHTML2Canvas(function(canvas) {
 		//$('.js-mergedImageToEdit').html(canvas);
-		document.getElementById('js-mergedImageToEdit').innerHTML = '';
-		document.getElementById('js-mergedImageToEdit').src = canvas.toDataURL()
-		//$('.js-mergedImageCreationCanvas').hide()
+		document.getElementById('merged-image-to-edit').innerHTML = '';
+		document.getElementById('merged-image-to-edit').src = canvas.toDataURL()
 	})
 }
 
