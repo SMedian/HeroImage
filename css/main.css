@@ -45,6 +45,16 @@ a {
 	border-radius: 0;
 }
 
+.image-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    width: 500px;
+    height: 500px;
+    opacity: 0.5;
+}
+
 #drop-area {
 	border: 5px dashed lightgray;
 	padding: 5em 2em;

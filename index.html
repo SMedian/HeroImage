@@ -26,6 +26,9 @@
 	<link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 
+	 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
 	<!-- ================= Favicon ================== -->
     <!-- Standard -->
     <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
@@ -59,7 +62,7 @@
 		<tr class="container-editor">
 			<td style="width:20%; background: #272c33; color:#fff; padding:10px; vertical-align: top; position:fixed">
 				<div class="">
-					<a class="js-scrollToBaseImagePage link" style="color:#fff"><h3>Base Image</h3></a>
+					<a class="js-scrollToBaseImagePane link" style="color:#fff"><h3>Base Image</h3></a>
 					<div class="js-baseImageChoiceControls">
 						<button class="js-clickToUploadBaseImage btn btn-primary btn-block button-panel" 
 							style="background:white; color:#0C132B; text-align:left" title="Upload an image from your computer">
@@ -87,19 +90,24 @@
 							</button>
 						</div>
 						<div>
-							<button class="js-resetBaseImageButton btn btn-warning btn-block button-panel" style="text-align:left;">
+							<button class="js-resetBaseImageButton btn btn-warning btn-block button-panel" style="text-align:left; display:none">
 								<span class="glyphicon glyphicon-repeat pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Undo Edits
 							</button>
 						</div>
 						<div >
 							<button class="js-clearBaseImageButton btn btn-danger btn-block button-panel" title="Clear Current Image to Start Over" style="text-align:left;">
-								<span class="glyphicon glyphicon-remove pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Clear Image
+								<span class="glyphicon glyphicon-remove pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> New Image
+							</button>
+						</div>
+						<div>
+							<button class="js-downloadBaseImageButton btn btn-block button-panel" title="Clear Current Image to Start Over" style="text-align:left; display:none">
+								<span class="glyphicon glyphicon-download pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Download
 							</button>
 						</div>
 					</div>
 				</div>
 				<div class="js-overlayImageContainer" style="margin-top:30px; display:none">
-					<a class="js-scrollToOverlayImagePage link" style="color:#fff"><h3>Overlay Image</h3></a>
+					<a class="js-scrollToOverlayImagePane link" style="color:#fff"><h3>Overlay Image</h3></a>
 					<div class="js-overlayImageChoiceControls">
 						<button class="js-clickToUploadOverlayImage btn btn-primary btn-block button-panel" style="background:white; color:#0C132B; text-align:left;">
 							<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;" aria-hidden="true"></span> Upload Image
@@ -119,20 +127,48 @@
 							<button class="js-overlayImageSearchLoadMoreButton clean-button clean-button--solid-white" style="display:none">Load More</button>
 						</div>
 					</div>
+
 					<div class="js-overlayImageControls" style="display:none">
 						<div>
-							<button id="edit-overlay-image-button" class="js-editOverlayImageButton btn btn-primary btn-block button-panel" style="text-align:left;">
+							<button class="js-editOverlayImageButton btn btn-primary btn-block button-panel" style="text-align:left;">
 								<span class="glyphicon glyphicon-pencil pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Edit Image
 							</button>
 						</div>
 						<div>
-							<button class="js-resetOverlayImageButton btn btn-warning btn-block button-panel" style="text-align:left;">
+							<button class="js-resetOverlayImageButton btn btn-warning btn-block button-panel" style="text-align:left; display: none">
 								<span class="glyphicon glyphicon-repeat pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Undo Edits
 							</button>
 						</div>
 						<div >
 							<button class="js-clearOverlayImageButton btn btn-danger btn-block button-panel" title="Clear Current Image to Start Over" style="text-align:left;">
-								<span class="glyphicon glyphicon-remove pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Clear Image
+								<span class="glyphicon glyphicon-remove pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> New Image
+							</button>
+						</div>
+						<div>
+							<button class="js-downloadOverlayImageButton btn btn-block button-panel" title="Clear Current Image to Start Over" style="text-align:left; display:none">
+								<span class="glyphicon glyphicon-download pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Download
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="js-mergedImageContainer" style="margin-top:30px;">
+					<a class="js-scrollToMergedImagePane link" style="color:#fff"><h3>Final Merged Image</h3></a>
+					<p class="clean-text ct-white text-t" style="margin-bottom:10px">This will update automatically as you edit your base and overlay images.</p>
+					<div class="js-mergedImageControls" style="display:none">
+						<div>
+							<button class="js-editMergedImageButton btn btn-primary btn-block button-panel" style="text-align:left;">
+								<span class="glyphicon glyphicon-pencil pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Edit Image
+							</button>
+						</div>
+						<div>
+							<button class="js-resetMergedImageButton btn btn-warning btn-block button-panel" style="text-align:left; display: none">
+								<span class="glyphicon glyphicon-repeat pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Undo Edits
+							</button>
+						</div>
+						<div>
+							<button class="js-downloadMergedImageButton btn btn-success btn-block button-panel" title="Clear Current Image to Start Over" style="text-align:left;">
+								<span class="glyphicon glyphicon-download pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Download Final Image
 							</button>
 						</div>
 					</div>
@@ -166,6 +202,17 @@
 						<p>(or click to upload)</p>
 					</div>
 					<img id="editable-overlay-image" class="js-overlayImageToEdit img-responsive">
+				</div>
+				
+				
+				<div class="js-mergedImageEditorPane" style="margin-top:50px;">
+					<h3>Final Merged Image</h3>
+					<img id="js-mergedImageToEdit" class="js-mergedImageToEdit img-responsive" style="border: 1px solid red">
+					
+					<div id="js-mergedImageCreationCanvas" class="js-mergedImageCreationCanvas" style="position:relative; width:500px; height:500px">
+						<img id='image-upload' class="js-mergeImageBase img-responsive" src="img/fb-default-avatar.jpg"/>
+						<img class="js-mergeImageOverlay image-overlay img-responsive"/>
+					</div>
 				</div>
 			</td>
 		</tr>
@@ -211,12 +258,42 @@
 	    	</div><!-- /.modal-content -->
 	  	</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
+
+	<button id="show-final-image-modal" type="button" style="display:none; visibility: hidden;" data-toggle="modal" data-target="#myModal"></button>
+	<!-- Modal -->
+	<div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content clean-container">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title heading">Right Click to Save Picture If Download Fails</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+					Right click the image below and click "Save Image As" to save it.
+					</p>
+					<div id="final-image-canvas" class="container clean-text"
+					style="border-top:1px solid #e5e5e5; padding-top:10px">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="clean-button" data-dismiss="modal">Sounds Good</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
 	
-	<script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+	
 	<script type="text/javascript" src="node_modules/bootstrap/js/modal.js"></script>
 	<script type="text/javascript" src="https://dme0ih8comzn4.cloudfront.net/imaging/v3/editor.js"></script>
 	<script type="text/javascript" src="js/libs/creativeSDK/config.js"></script>
 	<script type="text/javascript" src="js/UnsplashSearchHandler.js"></script>
+	
+	<!--======= image editing =========-->
+	<script src="/js/libs/html2canvas.js"></script>
+    <script src="/js/libs/FileSaver.js"></script>
 	<script type="text/javascript" src="js/tool.js"></script>
 </body>
 </html>

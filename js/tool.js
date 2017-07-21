@@ -24,10 +24,13 @@ function onSetBaseImage() {
 	$('.js-baseImageControls').show()
 	$('.js-overlayImageContainer').show()
 	$('.js-overlayImageEditorPane').show()
+	$('.js-mergedImageControls').show()
+	recreateMergedImage()
 }
 
 function clearBaseImage() {
 	baseImageElement.attr('src', '');
+	recreateMergedImage()
 }
 
 function validateBaseImageFileType(file) {
@@ -99,10 +102,14 @@ function onSetOverlayImage() {
 	toggleOverlayImageDragDrop();
 	$('.js-overlayImageChoiceControls').hide()
 	$('.js-overlayImageControls').show()
+	recreateMergedImage()
 }
 
 function clearOverlayImage() {
 	overlayImageElement.attr('src', '');
+	$('.js-overlayImageControls').hide()
+	$('.js-overlayImageChoiceControls').show()
+	recreateMergedImage()
 }
 
 function validateOverlayImageFileType(file) {
@@ -114,6 +121,43 @@ function validateOverlayImageFileType(file) {
 		alert('Try a JPEG or PNG image');
 		return false;
 	}
+}
+
+//=======MERGED IMAGE FUNCTIONS
+
+function getMergedImageUrl(onSuccess) {
+	getMergedImageCanvasFromHTML2Canvas((canvas) => {
+			onSuccess(canvas.toDataURL("image/png"))
+	})
+}
+
+function getMergedImageCanvasFromHTML2Canvas(onRendered) {
+	html2canvas($('#js-mergedImageCreationCanvas'), {
+		onrendered: onRendered
+	})
+}
+
+function recreateMergedImage() {
+	//$('.js-mergedImageCreationCanvas').show()
+	const baseSrc =  $(baseImageElement).attr('src')
+	const overlaySrc =  $(overlayImageElement).attr('src')
+	
+	$('.js-mergeImageBase').attr('src',baseSrc);
+	const width = $('.js-mergeImageBase').css('width')
+	const height = $('.js-mergeImageBase').css('height')
+	$('.js-mergedImageCreationCanvas').css('width', width)
+	$('.js-mergedImageCreationCanvas').css('height', height)
+debugger
+	$('.js-mergeImageOverlay').attr('src', overlaySrc);
+	$('.js-mergeImageOverlay').css('width', width)
+	$('.js-mergeImageOverlay').css('height', height)
+	$('.js-mergeImageOverlay').css('opacity', '0.1')
+	getMergedImageCanvasFromHTML2Canvas(function(canvas) {
+		//$('.js-mergedImageToEdit').html(canvas);
+		document.getElementById('js-mergedImageToEdit').innerHTML = '';
+		document.getElementById('js-mergedImageToEdit').src = canvas.toDataURL()
+		//$('.js-mergedImageCreationCanvas').hide()
+	})
 }
 
 //=======GENEREAL FUNCTIONS
@@ -193,11 +237,20 @@ $(document).ready(function() {
 			alert("Nothing to download.");
 		}
 	});
-
-
 	
+    $('.js-downloadMergedImageButton').click(function() { 
+        setTimeout(function(){$("#show-final-image-modal").click()},5)
 
-	
+        getMergedImageCanvasFromHTML2Canvas((canvas) => {
+			theCanvas = canvas;
+			document.getElementById('final-image-canvas').innerHTML = '';
+			document.getElementById('final-image-canvas').appendChild(canvas);
+
+			canvas.toBlob(function(blob) {
+				saveAs(blob, 'my-hero-image' + Date.now() + '.png'); 
+			});
+		})
+	});
 
 	//SEARCH------
 	UnsplashSearchHandler.attachSearchJQueries()
@@ -209,10 +262,6 @@ function attachBaseImageEditQueries() {
 	baseImageDropArea.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
 		if (e.preventDefault) e.preventDefault(); 
 		if (e.stopPropagation) e.stopPropagation(); 
-	})
-	.on('click', function(e) {
-		// Click anywhere in Droparea to upload file
-	  $('.js-clickToUploadBaseImageInput').click();
 	})
 	.on('drop', function(e) {
 		// Get the dropped file
@@ -237,15 +286,20 @@ function attachBaseImageEditQueries() {
 	})
 
 	//click area -> upload
-	$('.js-clickToUploadBaseImage').click(function(e) {
+	$(baseImageDropArea).click(clickInputToStartUpload)
+	$('.js-clickToUploadBaseImage').click(clickInputToStartUpload)
+
+	function clickInputToStartUpload() {
 		$('.js-clickToUploadBaseImageInput').click();
-	})
+	}
 
 	// Edit
 	$('.js-editBaseImageButton').click(function() {
 		launchImageEditor('base');
 	});
-
+	$('.js-baseImageToEdit').click(function() {
+		launchImageEditor('base');
+	});
 	// Reset
 	$('.js-resetBaseImageButton').click(function() {
 		if ($('.js-baseImageToEdit').attr('src') === originalBaseImageSrc || !originalBaseImageSrc) {
@@ -253,6 +307,7 @@ function attachBaseImageEditQueries() {
 		}
 		else {
 			$('.js-baseImageToEdit').attr('src', originalBaseImageSrc);
+			recreateMergedImage()
 		}
 	});
 
@@ -264,6 +319,7 @@ function attachBaseImageEditQueries() {
 			$('.js-baseImageControls').hide()
 			$('.js-overlayImageContainer').hide()
 			$('.js-overlayImageEditorPane').hide()
+			$('.js-mergedImageControls').hide()
 			$('.js-baseImageChoiceControls').show()
 		}
 		else {
@@ -279,10 +335,6 @@ function attachOverlayImageEditQueries() {
 	baseImageDropArea.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
 		if (e.preventDefault) e.preventDefault(); 
 		if (e.stopPropagation) e.stopPropagation(); 
-	})
-	.on('click', function(e) {
-		// Click anywhere in Droparea to upload file
-	  $('.js-clickToUploadOverlayImageInput').click();
 	})
 	.on('drop', function(e) {
 		// Get the dropped file
@@ -307,12 +359,18 @@ function attachOverlayImageEditQueries() {
 	})
 
 	//click area -> upload
-	$('.js-clickToUploadOverlayImage').click(function(e) {
+	$(overlayImageDropArea).click(clickInputToStartUpload)
+	$('.js-clickToUploadOverlayImage').click(clickInputToStartUpload)
+
+	function clickInputToStartUpload() {
 		$('.js-clickToUploadOverlayImageInput').click();
-	})
+	}
 
 	// Edit
 	$('.js-editOverlayImageButton').click(function() {
+		launchImageEditor('overlay');
+	});
+	$('.js-overlayImageToEdit').click(function() {
 		launchImageEditor('overlay');
 	});
 
@@ -323,6 +381,7 @@ function attachOverlayImageEditQueries() {
 		}
 		else {
 			$('.js-overlayImageToEdit').attr('src', originalOverlayImageSrc);
+			recreateMergedImage()
 		}
 	});
 
