@@ -25,12 +25,20 @@ function onSetBaseImage() {
 	$('.js-overlayImageContainer').show()
 	$('.js-overlayImageEditorPane').show()
 	$('.js-mergedImageControls').show()
+	$('.js-downloadMergedImageButton').show()
 	recreateMergedImage()
 }
 
 function clearBaseImage() {
 	baseImageElement.attr('src', '');
 	recreateMergedImage()
+	toggleBaseImageDragDrop();
+	$('.js-baseImageControls').hide()
+	$('.js-overlayImageContainer').hide()
+	$('.js-overlayImageEditorPane').hide()
+	$('.js-mergedImageControls').hide()
+	$('.js-downloadMergedImageButton').hide()
+	$('.js-baseImageChoiceControls').show()
 }
 
 function validateBaseImageFileType(file) {
@@ -332,12 +340,6 @@ function attachBaseImageEditQueries() {
 	$('.js-clearBaseImageButton').click(function() {
 		if (baseImageElement.attr('src')) {
 			clearBaseImage();
-			toggleBaseImageDragDrop();
-			$('.js-baseImageControls').hide()
-			$('.js-overlayImageContainer').hide()
-			$('.js-overlayImageEditorPane').hide()
-			$('.js-mergedImageControls').hide()
-			$('.js-baseImageChoiceControls').show()
 		}
 		else {
 			alert("Nothing to clear in base image.");
