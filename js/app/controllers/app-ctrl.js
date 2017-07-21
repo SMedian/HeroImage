@@ -40,7 +40,7 @@ angularApp
         } else if(type == 'overlay') {
             setOverlayImageFromUrl(image.url)
         }
-        $scope.searchImagesFormIsOpen = false
+        $scope.closeImageSearchForm()
     }
 
     $scope.imageSearchResultsTypeMap = {base: [], overlay: []}
