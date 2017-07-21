@@ -25,6 +25,11 @@
 
 	<link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+	<!-- ================= Favicon ================== -->
+    <!-- Standard -->
+    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
+    <link rel="icon" href="/img/logo.png" type="image/x-icon">
 </head>
 <body>
 	<div class="row" style="background:linear-gradient(120deg,#102938 25%,#0C132B 85%); color: #fff">
@@ -52,11 +57,11 @@
 
 	<table id="table-editor" style="width:100%">
 		<tr class="container-editor">
-			<td style="width:20%; background: #272c33; color:#fff; padding:10px; vertical-align: top;">
+			<td style="width:20%; background: #272c33; color:#fff; padding:10px; vertical-align: top; position:fixed">
 				<div class="">
-					<h3>Base Image</h3>
+					<a class="js-scrollToBaseImagePage link" style="color:#fff"><h3>Base Image</h3></a>
 					<div class="js-baseImageChoiceControls">
-						<button id="edit-image-button" class="js-clickToUploadBaseImage btn btn-primary btn-block button-panel" 
+						<button class="js-clickToUploadBaseImage btn btn-primary btn-block button-panel" 
 							style="background:white; color:#0C132B; text-align:left" title="Upload an image from your computer">
 							<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Upload Image
 						</button>
@@ -77,7 +82,7 @@
 					</div>
 					<div class="js-baseImageControls" style="display:none">
 						<div>
-							<button id="edit-image-button" class="js-editBaseImageButton btn btn-primary btn-block button-panel" style="text-align:left;">
+							<button id="edit-base-image-button" class="js-editBaseImageButton btn btn-primary btn-block button-panel" style="text-align:left;">
 								<span class="glyphicon glyphicon-pencil pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Edit Image
 							</button>
 						</div>
@@ -94,9 +99,9 @@
 					</div>
 				</div>
 				<div class="js-overlayImageContainer" style="margin-top:30px; display:none">
-					<h3>Overlay Image</h3>
-					<div>
-						<button id="edit-image-button" class="js-addOverlayImageButton btn btn-primary btn-block button-panel" style="background:white; color:#0C132B; text-align:left;">
+					<a class="js-scrollToOverlayImagePage link" style="color:#fff"><h3>Overlay Image</h3></a>
+					<div class="js-overlayImageChoiceControls">
+						<button class="js-clickToUploadOverlayImage btn btn-primary btn-block button-panel" style="background:white; color:#0C132B; text-align:left;">
 							<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;" aria-hidden="true"></span> Upload Image
 						</button>
 						<div id="custom-search-input">
@@ -112,6 +117,23 @@
 						<div class="js-overlayImageSearchResultsContainer" style="height:100%;">
 							<div class="js-overlayImageSearchResults" style="height:50px; overflow-y:scroll"></div>
 							<button class="js-overlayImageSearchLoadMoreButton clean-button clean-button--solid-white" style="display:none">Load More</button>
+						</div>
+					</div>
+					<div class="js-overlayImageControls" style="display:none">
+						<div>
+							<button id="edit-overlay-image-button" class="js-editOverlayImageButton btn btn-primary btn-block button-panel" style="text-align:left;">
+								<span class="glyphicon glyphicon-pencil pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Edit Image
+							</button>
+						</div>
+						<div>
+							<button class="js-resetOverlayImageButton btn btn-warning btn-block button-panel" style="text-align:left;">
+								<span class="glyphicon glyphicon-repeat pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Undo Edits
+							</button>
+						</div>
+						<div >
+							<button class="js-clearOverlayImageButton btn btn-danger btn-block button-panel" title="Clear Current Image to Start Over" style="text-align:left;">
+								<span class="glyphicon glyphicon-remove pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Clear Image
+							</button>
 						</div>
 					</div>
 				</div>
@@ -134,7 +156,7 @@
 						<p>Drop your base image here!</p>
 						<p>(or click to upload)</p>
 					</div>
-					<img id="editable-image" class="js-baseImageToEdit img-responsive">
+					<img id="editable-base-image" class="js-baseImageToEdit img-responsive">
 				</div>
 				<div class="js-overlayImageEditorPane" style="margin-top:50px; display:none">
 					<h3>Overlay Image</h3>
@@ -143,7 +165,7 @@
 						<p>Drop your overlay image here!</p>
 						<p>(or click to upload)</p>
 					</div>
-					<img id="editable-image" class="js-overlayImageToEdit img-responsive">
+					<img id="editable-overlay-image" class="js-overlayImageToEdit img-responsive">
 				</div>
 			</td>
 		</tr>
@@ -193,7 +215,8 @@
 	<script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
 	<script type="text/javascript" src="node_modules/bootstrap/js/modal.js"></script>
 	<script type="text/javascript" src="https://dme0ih8comzn4.cloudfront.net/imaging/v3/editor.js"></script>
-	<script type="text/javascript" src="config.js"></script>
-	<script type="text/javascript" src="tool.js"></script>
+	<script type="text/javascript" src="js/libs/creativeSDK/config.js"></script>
+	<script type="text/javascript" src="js/UnsplashSearchHandler.js"></script>
+	<script type="text/javascript" src="js/tool.js"></script>
 </body>
 </html>
