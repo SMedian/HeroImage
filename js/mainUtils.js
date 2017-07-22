@@ -42,7 +42,6 @@ LocalStorageUtil.addNewImageBase64UrlUpload = function(base64Url) {
         const numExistingItems = storage.length
         for (var i = 0; i < numExistingItems; i++) {
             if(storage[i].base64Url == base64Url) {
-                debugger
                 return
             }
         }
@@ -65,7 +64,7 @@ LocalStorageUtil.addNewImageBase64UrlDownload = function(base64Url) {
         const numExistingItems = storage.length
         for (var i = 0; i < numExistingItems; i++) {
             if(storage[i].base64Url == base64Url) {
-                debugger
+
                 return
             }
         }

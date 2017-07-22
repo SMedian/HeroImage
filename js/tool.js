@@ -284,6 +284,7 @@ function downloadMergedImage() {
 		canvas.toBlob(function(blob) {
 			saveAs(blob, 'my-hero-image' + Date.now() + '.png'); 
 		});
+		LocalStorageUtil.addNewImageBase64UrlDownload($('#merged-image-to-edit').attr('src'))
 	})
 }
 
