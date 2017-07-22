@@ -37,7 +37,9 @@ function onSetBaseImage() {
 	$('.js-downloadMergedImageButton').click(function() { 
         downloadMergedImage()
 	});
-	recreateMergedImage()
+	setTimeout(() => {
+		recreateMergedImage()
+	}, 300)
 }
 
 function clearBaseImage() {
