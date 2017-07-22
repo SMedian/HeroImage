@@ -156,15 +156,18 @@ function getMergedImageUrl(onSuccess) {
 }
 
 var inLineToRender = 0
+var scrollPos
 function getMergedImageCanvasFromHTML2Canvas(onRendered) {
 	$('#merged-image-creation-canvas').show()
 	$('#merged-image-creation-canvas').css('opacity', '1')
 	inLineToRender++
+	scrollPos = document.body.scrollTop;
 	html2canvas($('#merged-image-creation-canvas'), {
 		onrendered: (canvas) => {
 			onRendered(canvas)
 			inLineToRender--
 			if(inLineToRender < 1) $('#merged-image-creation-canvas').css('opacity', '0.01')
+			window.scrollTo(0,scrollPos);
 		},
     	useCORS: true
 	})
@@ -210,13 +213,22 @@ function handleSelectSearchResultImageForType(type, data) {
 	if(data.base64Url) {
 		return setImageUrl(data.base64Url)
 	}
-	$.post("service/convert/image/url/base64?url=" + data.url )
+
+	getImageUrlBase64Url(data.url, function(base64Url){
+		setImageUrl(base64Url)
+	}, function(err) {
+		console.log(JSON.stringify(err))
+	})
+}
+
+function getImageUrlBase64Url(imageUrl, onSuccess, onFail) {
+	$.post("service/convert/image/url/base64?url=" + imageUrl )
 		.then(function(response){
-			setImageUrl(response.base64URL)
+			debugger
+			onSuccess(response.base64Url)
 		}, function(err) {
-			console.log(JSON.stringify(err))
+			if(onFail) onFail(err)
 		})
-	
 }
 
 // Checks if the file type is in the array of supported types
@@ -246,6 +258,7 @@ var baseImageElement, baseImageDropArea,
 	currentOverlayImage /*assigned when the Edit button is clicked*/, 
 	originalMergedImageSrc /*assigned when image file is dropped*/, 
 	currentMergedImage /*assigned when the Edit button is clicked*/, 
+	editedMergedImageSrc,
 	creativeSDKImageEditor
 
 $(document).ready(function() {
@@ -260,10 +273,24 @@ $(document).ready(function() {
 	creativeSDKImageEditor = new Aviary.Feather({
 		apiKey: creativeSDKConfig.apiKey,
 		onSave: function(imageID, newURL) {
-			if(currentImageEditType == 'base') currentBaseImage.src = newURL;
-			if(currentImageEditType == 'overlay') currentOverlayImage.src = newURL;
-			if(currentImageEditType == 'merged') currentMergedImage.src = newURL;
-			creativeSDKImageEditor.close();
+			getImageUrlBase64Url(newURL, function(newURL){
+				if(currentImageEditType == 'base') {
+					currentBaseImage.src = newURL;
+					recreateMergedImage()
+				}
+				if(currentImageEditType == 'overlay') {
+					currentOverlayImage.src = newURL;
+					recreateMergedImage()
+				}
+				if(currentImageEditType == 'merged') {
+					editedMergedImageSrc = currentMergedImage.src
+					currentMergedImage.src = newURL;
+					recreateMergedImage()
+				}
+				creativeSDKImageEditor.close();
+			}, function(err) {
+				console.log(JSON.stringify(err))
+			})
 			console.log(newURL);
 		},
 		onError: function(errorObj) {
@@ -281,18 +308,6 @@ $(document).ready(function() {
 	attachBaseImageEditQueries()
 	attachOverlayImageEditQueries()
 	attachMergedImageEditQueries()
-
-	// Download
-	$('.js-downloadImageButton').click(function(e) {
-		e.preventDefault();
-
-		if (baseImageElement.attr('src')) {
-			downloadImage();
-		}
-		else {
-			alert("Nothing to download.");
-		}
-	});
 	
     $('.js-downloadMergedImageButton').click(function() { 
         setTimeout(function(){$("#show-final-image-modal").click()},5)
