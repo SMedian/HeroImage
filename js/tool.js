@@ -26,6 +26,11 @@ function onSetBaseImage() {
 	$('.js-overlayImageEditorPane').show()
 	$('.js-mergedImageControls').show()
 	$('.js-downloadMergedImageButton').show()
+
+	$('.js-downloadMergedImageButton').unbind()
+	$('.js-downloadMergedImageButton').click(function() { 
+        downloadMergedImage()
+	});
 	recreateMergedImage()
 }
 
@@ -237,17 +242,37 @@ function fileIsSupported(file) {
 	return supportedFileTypes.indexOf(file.type) >= 0 ? true : false;
 }
 
-function downloadImage() {
-	var url = currentBaseImage ? currentBaseImage.src : originalBaseImageSrc;
+function downloadImageOfType(type) {
+	var url
+	if(type == 'merged') {
+		downloadMergedImage()
+		return
+	}
+
+	if(type == 'base') url = currentBaseImage ? currentBaseImage.src : originalBaseImageSrc;
+	else if(type == 'overlay') url = currentBaseImage ? currentBaseImage.src : originalBaseImageSrc;
 	var link = document.createElement("a");
-	
 	link.href = url;
 
 	// Download attr 
 	//// Only honored for links within same origin, 
 	//// therefore won't work once img has been edited (i.e., S3 URLs)
-	link.download = 'hero-image-' + Date.now();
+	link.download = 'hero-image-' + type + Date.now();
 	link.click();
+}
+
+function downloadMergedImage() {
+	setTimeout(function(){$("#show-final-image-modal").click()},5)
+
+	getMergedImageCanvasFromHTML2Canvas((canvas) => {
+		theCanvas = canvas;
+		document.getElementById('final-image-canvas').innerHTML = '';
+		document.getElementById('final-image-canvas').appendChild(canvas);
+
+		canvas.toBlob(function(blob) {
+			saveAs(blob, 'my-hero-image' + Date.now() + '.png'); 
+		});
+	})
 }
 
 var baseImageElement, baseImageDropArea, 
@@ -309,18 +334,16 @@ $(document).ready(function() {
 	attachOverlayImageEditQueries()
 	attachMergedImageEditQueries()
 	
-    $('.js-downloadMergedImageButton').click(function() { 
-        setTimeout(function(){$("#show-final-image-modal").click()},5)
+    $('.js-downloadBaseImageButton').click(function() { 
+        downloadImageOfType('base')
+	});
 
-        getMergedImageCanvasFromHTML2Canvas((canvas) => {
-			theCanvas = canvas;
-			document.getElementById('final-image-canvas').innerHTML = '';
-			document.getElementById('final-image-canvas').appendChild(canvas);
+	$('.js-downloadOverlayImageButton').click(function() { 
+        downloadImageOfType('overlay')
+	});
 
-			canvas.toBlob(function(blob) {
-				saveAs(blob, 'my-hero-image' + Date.now() + '.png'); 
-			});
-		})
+	$('.js-downloadMergedImageButton').click(function() { 
+        downloadMergedImage()
 	});
 
 	$('.js-scrollToBaseImagePane').click(function() { 
