@@ -25,6 +25,7 @@ function setBaseImageFromUrl(url) {
 function onSetBaseImage() {
 	toggleBaseImageDragDrop();
 	//launchImageEditor();
+	$('.js-mergedImageEditorPane').show()
 	$('.js-baseImageChoiceControls').hide()
 	$('.js-baseImageControls').show()
 	$('.js-overlayImageContainer').show()
@@ -319,6 +320,7 @@ $(document).ready(function() {
 					recreateMergedImage()
 				}
 				if(currentImageEditType == 'merged') {
+					debugger
 					editedMergedImageSrc = currentMergedImage.src
 					currentMergedImage.src = newURL;
 					recreateMergedImage()

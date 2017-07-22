@@ -70,7 +70,7 @@
 
 	<table id="table-editor" style="width:100%">
 		<tr class="container-editor">
-			<td style="width:20%; background: #000; color:#fff; padding:10px; vertical-align: top; position:fixed; top:69px; min-height:100%">
+			<td style="width:20%; background: #000; color:#fff; padding:10px; vertical-align: top; position:fixed; top:69px; min-height:100%; z-index:9999">
 				<div class="js-baseImageContainer js-scrollToBaseImagePane">
 					<a class="link" style="color:#fff"><h3>Base Image</h3></a>
 					<div class="js-baseImageChoiceControls">
@@ -228,22 +228,18 @@
 					</div>
 					<img id="editable-overlay-image" class="js-overlayImageToEdit img-responsive">
 				</div>
-				
-				
-				<div class="js-mergedImageEditorPane" style="margin-top:50px;">
-					<h3>Final Merged Image</h3>
-					<img id="merged-image-to-edit" src="img/loading_post.png" class="js-mergedImageToEdit img-responsive" style="display:none; width:100%">
-					
-					<div id="merged-image-creation-canvas" class="js-mergedImageCreationCanvas" style="position:relative; width:100%">
-						<img id='image-upload' class="js-mergeImageBase img-responsive" style="width:100%" src="img/loading_post.png"/>
-						<img class="js-mergeImageOverlay image-overlay img-responsive" style="opacity:0.5" src=""/>
-					</div>
-				</div>
 			</td>
 		</tr>
-
 	</table> <!-- end .row -->
-
+	<div class="js-mergedImageEditorPane" style="margin-top:50px; display:none">
+		<h3 style="text-align:center">Final Merged Image</h3>
+		<img id="merged-image-to-edit" src="img/loading_post.png" class="js-mergedImageToEdit img-responsive" style="display:none; width:100%">
+		
+		<div id="merged-image-creation-canvas" class="js-mergedImageCreationCanvas" style="position:relative; width:100%">
+			<img id='image-upload' class="js-mergeImageBase img-responsive" style="width:100%" src=""/>
+			<img class="js-mergeImageOverlay image-overlay img-responsive" style="opacity:0.5" src=""/>
+		</div>
+	</div>
 
 	<div id="more-info-modal" class="modal fade" tabindex="-1" role="dialog">
 		<div class="modal-dialog">
@@ -290,14 +286,14 @@
 			<div class="modal-content clean-container">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title heading">Right Click to Save Picture If Download Fails</h4>
+					<h4 class="modal-title heading">If Download Fails, Right Click to Save Picture</h4>
 				</div>
 				<div class="modal-body">
 					<p>
-					Right click the image below and click "Save Image As" to save it.
+						If download does not begin, close this window, right click the final image, and select "Save Image As"...
 					</p>
 					<div id="final-image-canvas" class="container clean-text"
-					style="padding-top:10px">
+					style="padding-top:10px; display:none">
 					</div>
 				</div>
 				<div class="modal-footer">
