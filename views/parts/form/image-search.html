@@ -1,16 +1,3 @@
-<style>
-    .masonry-grid { /* Masonry container */
-    column-count: 4;
-    column-gap: 1em;
-}
-
-.masonry-grid-item { /* Masonry bricks or child elements */
-    background-color: #eee;
-    display: inline-block;
-    margin: 0 0 1em;
-    width: 100%;
-}
-</style>
 <div ng-show="imageSearchFormIsOpen" id="add-new-item-form" class="col-md-12 u-borderBottom u-backgroundGrayLightest" 
     style="background:#fff; position: fixed; top: 0px; z-index: 99999; width: 100%; height: 100%; overflow-y: overlay; padding-bottom: 100px; padding-left: 10px;">
     <div id="new-item-action-buttons" style="border-bottom: 1px solid rgba(0,0,0,.05); background:#fff; color: white;
@@ -52,13 +39,13 @@
                 </h2>
             </li>
             <li style="margin-top:20px">
-                <div class="js-imageSearchResults">
-                    <div class="js-collectionResultsList masonry-grid">
-                        <div class="js-imageSearchResultLI masonry-grid-item" style="" ng-repeat="image in imageSearchResultsTypeMap[currentImageSearchType]">
-                            <img ng-src="{{image.thumbUrl}}" data-regular-url="{{image.url}}" ng-click="handleSelectSearchResultImageForType(image)"/>
-                            <a class="link text-t1 u-colorLightGrey" style="display:block; padding:5px 0px 5px 0px; background: #fff" href="https://unsplash.com/'+image.user.handle+'?utm_source=SMedianHeroImage&utm_medium=referral&utm_campaign=api-credit">
-                                {{image.user.name}} / Unsplash
-                            </a>
+                <div class="js-collectionResultsList masonry-grid">
+                    <div class="masonry-grid-item" style="" ng-repeat="image in imageSearchResultsTypeMap[currentImageSearchType]">
+                        <div ng-show="imageUrlBase64UrlMap[image.url]">
+                        <img ng-src="{{image.thumbUrl}}" data-regular-url="{{image.url}}" ng-click="handleSelectSearchResultImageForType(image)"/>
+                        <a class="link text-t1 u-colorLightGrey" style="display:block; padding:5px 0px 5px 0px; background: #fff" href="https://unsplash.com/'+image.user.handle+'?utm_source=SMedianHeroImage&utm_medium=referral&utm_campaign=api-credit">
+                            {{image.user.name}} / Unsplash
+                        </a>
                         </div>
                     </div>
                 </div>

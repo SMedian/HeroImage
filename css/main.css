@@ -35,6 +35,17 @@ a {
   display:none
 }
 
+.masonry-grid { /* Masonry container */
+    column-count: 4;
+    column-gap: 1em;
+}
+
+.masonry-grid-item { /* Masonry bricks or child elements */
+    display: inline-block;
+    margin: 0 0 1em;
+    width: 100%;
+}
+
 
 .padleft {
 	padding: 0px 0px 0px 20px;

@@ -8,6 +8,11 @@ function toggleBaseImageDragDrop() {
 function setBaseImageFromFile(file) {
 	baseImageElement.attr('src', window.URL.createObjectURL(file));
 	originalBaseImageSrc = baseImageElement.attr('src');
+	setTimeout(() => {
+		FileUtils.getBase64(file, (base64Url) => {
+			LocalStorageUtil.addNewImageBase64Url(base64Url)
+		})
+	}, 250)
 	onSetBaseImage()
 }
 
@@ -57,54 +62,6 @@ function validateBaseImageFileType(file) {
 	}
 }
 
-function launchImageEditor(type) {
-	currentImageEditType = type
-	if(currentImageEditType == 'base') {
-		if (!originalBaseImageSrc) {
-			alert('Drop an image in the base image drop area first.');
-			return false;
-		}
-
-		// Get the image to be edited
-		// `[0]` gets the image itself, not the jQuery object
-		currentBaseImage = $('.js-baseImageToEdit')[0];
-
-		creativeSDKImageEditor.launch({
-			image: currentBaseImage.id,
-			//url: currentImage.src
-		});
-	} else if(currentImageEditType == 'overlay') {
-		if (!originalOverlayImageSrc) {
-			alert('Drop an image in the overlay image drop area first.');
-			return false;
-		}
-
-		// Get the image to be edited
-		// `[0]` gets the image itself, not the jQuery object
-		currentOverlayImage = $('.js-overlayImageToEdit')[0];
-
-		creativeSDKImageEditor.launch({
-			image: currentOverlayImage.id,
-			//url: currentImage.src
-		});
-	} else if(currentImageEditType == 'merged') {
-		if (!originalMergedImageSrc) {
-			alert('Choose base and overlay images first.');
-			return false;
-		}
-
-		// Get the image to be edited
-		// `[0]` gets the image itself, not the jQuery object
-		currentMergedImage = $('.js-mergedImageToEdit')[0];
-
-		creativeSDKImageEditor.launch({
-			image: currentMergedImage.id,
-			//url: currentImage.src
-		});
-	}
-	
-}
-
 //=========OVERLAY IMAGE FUNCTION
 
 // Toggle visibility of the drag/drop div and img element
@@ -116,6 +73,12 @@ function toggleOverlayImageDragDrop() {
 function setOverlayImageFromFile(file) {
 	overlayImageElement.attr('src', window.URL.createObjectURL(file));
 	originalOverlayImageSrc = overlayImageElement.attr('src');
+	
+	setTimeout(() => {
+		FileUtils.getBase64(file, (base64Url) => {
+			LocalStorageUtil.addNewImageBase64Url(base64Url)
+		})
+	}, 250)
 	onSetOverlayImage()
 }
 
@@ -206,7 +169,55 @@ function updateMergeImageOverlayOpacity(opacity) {
 }
 
 //=======GENEREAL FUNCTIONS
-function handleSelectSearchResultImageForType(type, data) {
+function launchImageEditor(type) {
+	currentImageEditType = type
+	if(currentImageEditType == 'base') {
+		if (!originalBaseImageSrc) {
+			alert('Drop an image in the base image drop area first.');
+			return false;
+		}
+
+		// Get the image to be edited
+		// `[0]` gets the image itself, not the jQuery object
+		currentBaseImage = $('.js-baseImageToEdit')[0];
+
+		creativeSDKImageEditor.launch({
+			image: currentBaseImage.id,
+			//url: currentImage.src
+		});
+	} else if(currentImageEditType == 'overlay') {
+		if (!originalOverlayImageSrc) {
+			alert('Drop an image in the overlay image drop area first.');
+			return false;
+		}
+
+		// Get the image to be edited
+		// `[0]` gets the image itself, not the jQuery object
+		currentOverlayImage = $('.js-overlayImageToEdit')[0];
+
+		creativeSDKImageEditor.launch({
+			image: currentOverlayImage.id,
+			//url: currentImage.src
+		});
+	} else if(currentImageEditType == 'merged') {
+		if (!originalMergedImageSrc) {
+			alert('Choose base and overlay images first.');
+			return false;
+		}
+
+		// Get the image to be edited
+		// `[0]` gets the image itself, not the jQuery object
+		currentMergedImage = $('.js-mergedImageToEdit')[0];
+
+		creativeSDKImageEditor.launch({
+			image: currentMergedImage.id,
+			//url: currentImage.src
+		});
+	}
+	
+}
+
+function handleSelectImageForType(type, data) {
 	function setImageUrl(imageUrl) {
 		if(type == 'base') {
 			setBaseImageFromUrl(imageUrl)

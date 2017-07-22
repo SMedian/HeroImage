@@ -66,6 +66,7 @@
 	</div>-->
 
 	<div ng-include="'views/parts/form/image-search.html'"></div>
+	<div ng-include="'views/parts/image-uploads.html'"></div>
 
 	<table id="table-editor" style="width:100%">
 		<tr class="container-editor">
@@ -77,6 +78,12 @@
 							style="background:white; color:#0C132B; text-align:left" title="Upload an image from your computer">
 							<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Upload Image
 						</button>
+						<div class="js-existingImageUploadsButtonContainer"  style="margin-top:20px; display:none">
+							<button class="btn btn-primary btn-block button-panel" style="background:white; color:#0C132B; text-align:left" 
+								title="Show existing image uploads" ng-click="openImageUploadsWindowForType('base')">
+								<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Existing Uploads
+							</button>
+						</div>
 						<div id="custom-search-input" ng-click="openImageSearchFormForType('base')">
                             <div class="input-group">
                                 <input type="text" class="js-baseImageSearchInput search-query form-control" placeholder="Search stock images ..." />
@@ -86,10 +93,6 @@
                                     </button>
                                 </span>
                             </div>
-						</div>
-						<div class="js-baseImageSearchResultsContainer" style="height:100%;">
-							<div class="js-baseImageSearchResults" style="height:50px; overflow-y:scroll"></div>
-							<button class="js-baseImageSearchLoadMoreButton clean-button clean-button--solid-white" style="display:none">Load More</button>
 						</div>
 					</div>
 					<div class="js-baseImageControls" style="display:none">
@@ -121,6 +124,12 @@
 						<button class="js-clickToUploadOverlayImage btn btn-primary btn-block button-panel" style="background:white; color:#0C132B; text-align:left;">
 							<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;" aria-hidden="true"></span> Upload Image
 						</button>
+						<div class="js-existingImageUploadsButtonContainer"  style="margin-top:20px; display:none">
+							<button class="btn btn-primary btn-block button-panel" style="background:white; color:#0C132B; text-align:left" 
+								title="Show existing image uploads" ng-click="openImageUploadsWindowForType('overlay')">
+								<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;"  aria-hidden="true"></span> Existing Uploads
+							</button>
+						</div>
 						<div id="custom-search-input" ng-click="openImageSearchFormForType('overlay')">
                             <div class="input-group">
                                 <input type="text" class="js-overlayImageSearchInput search-query form-control" placeholder="Search stock images ..." />

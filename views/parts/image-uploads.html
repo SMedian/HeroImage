@@ -1,0 +1,44 @@
+<div ng-show="imageUploadsWindowIsOpen" id="add-new-item-form" class="col-md-12 u-borderBottom u-backgroundGrayLightest" 
+    style="background:#fff; position: fixed; top: 0px; z-index: 99999; width: 100%; height: 100%; overflow-y: overlay; padding-bottom: 100px; padding-left: 10px;">
+    <div id="new-item-action-buttons" style="border-bottom: 1px solid rgba(0,0,0,.05); background:#fff; color: white;
+        padding-top: 10px; top: 0; position: fixed; left: 0; width: 100%; text-align: center; z-index: 9999;">
+        <table class="col-md-12 container" style="padding-top:5px; padding-bottom:5px;">
+            <tr>
+                <td class="col-md-3">
+                    <button class="clean-button clean-button--plain" ng-click="closeImageUploadsWindow()">
+                        <img class="u-size16x16" style="margin-top: -3px;" src="/img/icon_arrow_left.svg"/>
+                        <span>Back to Editor</span>
+                    </button>
+                </td>
+                <td class="col-md-6" style="max-width:850px">
+                    
+                </td>
+                <td class="clean-text">
+                    <h6>{{currentImageSearchType.substring(0,1).toUpperCase() + currentImageSearchType.substring(1)}} Image</h6>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="container" style="padding-top:10px; max-width:850px; margin-top:90px;">
+        <ul style="list-style: none;">
+            <li>
+                <h2>
+                    Existing Image Uploads
+                    <p class="clean-text card-description">
+                        Choose an image you uploaded in the past to use as your {{currentImageSearchType}} image.
+                    </p>
+                </h2>
+            </li>
+            <li style="margin-top:20px">
+                <div>
+                    <div class="js-collectionResultsList masonry-grid">
+                        <div class="masonry-grid-item" style="" ng-repeat="image in existingImageUploads">
+                            <img ng-src="{{image.base64Url}}" style="max-width:100%" ng-click="handleSelectExistingImageUploadForType(image)"/>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -11,6 +11,57 @@ const FuncUtils = function() {}
 const ArrayUtils = function() {}
 const NetworkUtils = function() {}
 const NumberUtils = function() {}
+const LocalStorageUtil = function() {
+
+}
+const FileUtils = function() {
+    
+}
+
+FileUtils.getBase64 = function(file, cb) {
+   var reader = new FileReader();
+   reader.readAsDataURL(file);
+   reader.onload = function () {
+     cb(reader.result);
+   };
+   reader.onerror = function (error) {
+     console.log('Error: ', error);
+   };
+}
+
+
+LocalStorageUtil.set = localStorage.setItem
+LocalStorageUtil.get = localStorage.getItem
+LocalStorageUtil.removeset = localStorage.removeItem
+
+LocalStorageUtil.addNewImageBase64Url = function(base64Url) {
+    try {
+        var storage = LocalStorageUtil.getAllImageUploads()
+        if(!ArrayUtils.isArray(storage)) storage = []
+            
+        const numExistingItems = storage.length
+        for (var i = 0; i < numExistingItems; i++) {
+            if(storage[i].base64Url == base64Url) {
+                debugger
+                return
+            }
+        }
+
+        storage.push({
+            base64Url: base64Url,
+            createdAt: Date.now()
+        })
+        localStorage.setItem('imageUploads4', JSON.stringify(storage))
+        dispatchEvent("LocalStorageUtil.savedImageUploads")
+        return storage
+    }catch(err) {}
+}
+
+LocalStorageUtil.getAllImageUploads = () => {
+    try {
+    return JSON.parse(localStorage.getItem('imageUploads4'))
+    } catch(err) {}
+}
 
 StringUtils.isValidHex = function(str) {
     return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(str)
