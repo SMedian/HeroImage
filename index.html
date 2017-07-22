@@ -50,7 +50,7 @@
     <link rel="icon" href="/img/logo.png" type="image/x-icon">
 </head>
 <body>
-	<div ng-include="'views/parts/nav/top-main.html'"></div>
+	<div style="position:fixed; width:100%" ng-include="'views/parts/nav/top-main.html'"></div>
 	<!--<div class="col-md-12 mobile-only" style="background-color:#fff; position: fixed; top: 0px; z-index: 9999; width: 100%; height: 100%; overflow-y: overlay; padding-bottom: 100px; padding-left: 10px;">
 		<div ng-include="'views/parts/nav/top-main.html'"></div>
 		<div class="container" style="padding-top:10%; text-align:center;">
@@ -70,7 +70,7 @@
 
 	<table id="table-editor" style="width:100%">
 		<tr class="container-editor">
-			<td style="width:20%; background: #272c33; color:#fff; padding:10px; vertical-align: top; position:fixed">
+			<td style="width:20%; background: #000; color:#fff; padding:10px; vertical-align: top; position:fixed; top:69px; min-height:100%">
 				<div class="js-baseImageContainer js-scrollToBaseImagePane">
 					<a class="link" style="color:#fff"><h3>Base Image</h3></a>
 					<div class="js-baseImageChoiceControls">
@@ -177,7 +177,7 @@
 					<div class="js-mergedImageControls" style="display:none">
 						<div class="js-mergedImageControlOverlayContainer" style="margin-top:20px; margin-bottom:20px; display: none">
 							<p class="clean-text" style="color:#fff">Overlay Opacity</p>
-							<input type="range" min="0.1" max="0.96" step="0.05" value="0.5" data-orientation="horizontal" 
+							<input type="range" min="0.1" max="1" step="0.05" value="0.5" data-orientation="horizontal" 
 								ng-model="mergeImageOpacity" ng-change="updateMergedImageOverlayOpacity()">
 						</div>
 						<div>
@@ -232,10 +232,10 @@
 				
 				<div class="js-mergedImageEditorPane" style="margin-top:50px;">
 					<h3>Final Merged Image</h3>
-					<img id="merged-image-to-edit" src="img/loading_post.png" class="js-mergedImageToEdit img-responsive" style="display:none">
+					<img id="merged-image-to-edit" src="img/loading_post.png" class="js-mergedImageToEdit img-responsive" style="display:none; width:100%">
 					
-					<div id="merged-image-creation-canvas" class="js-mergedImageCreationCanvas" style="position:relative; width:500px; height:500px">
-						<img id='image-upload' class="js-mergeImageBase img-responsive" src="img/loading_post.png"/>
+					<div id="merged-image-creation-canvas" class="js-mergedImageCreationCanvas" style="position:relative; width:100%">
+						<img id='image-upload' class="js-mergeImageBase img-responsive" style="width:100%" src="img/loading_post.png"/>
 						<img class="js-mergeImageOverlay image-overlay img-responsive" style="opacity:0.5" src=""/>
 					</div>
 				</div>
@@ -268,9 +268,7 @@
 							Want to Overlay Another Image?
 							<ol>
 								<li>Choose an overlay image and edit it as desired.</li>
-								<li>Click the <b>Merge Images</b> button to overlay your overlay image over your base image.</li>
-								<li>Choose an opacity for your overlay image.</li>
-								<li>Scroll down and download the finished merged image.</li>
+								<li>Scroll down to edit and download the finished merged image.</li>
 							</ol>
 						</li>
 					</ol>
@@ -299,7 +297,7 @@
 					Right click the image below and click "Save Image As" to save it.
 					</p>
 					<div id="final-image-canvas" class="container clean-text"
-					style="border-top:1px solid #e5e5e5; padding-top:10px">
+					style="padding-top:10px">
 					</div>
 				</div>
 				<div class="modal-footer">

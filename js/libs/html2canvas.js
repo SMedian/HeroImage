@@ -2046,12 +2046,21 @@ _html2canvas.Parse = function (images, options) {
     return backgroundBounds;
   }
 
-  function getBounds(element, transform) {
-    var bounds = (transform.matrix) ? Util.OffsetBounds(element) : Util.Bounds(element);
-    transform.origin[0] += bounds.left;
-    transform.origin[1] += bounds.top;
-    return bounds;
-  }
+function getBounds (node) {
+        if (node.getBoundingClientRect) {
+            var clientRect = node.getBoundingClientRect();
+            var width = node.offsetWidth == null ? clientRect.width : node.offsetWidth;
+            return {
+                top   : Math.floor(clientRect.top),
+                bottom: Math.floor(clientRect.bottom || (clientRect.top + clientRect.height)),
+                right : Math.floor(clientRect.left + width),
+                left  : Math.floor(clientRect.left),
+                width : width,
+                height: node.offsetHeight == null ? clientRect.height : node.offsetHeight
+            };
+        }
+        return {};
+    }
 
   function renderElement(element, parentStack, pseudoElement, ignoreBackground) {
     var transform = getTransform(element, parentStack),

@@ -10,7 +10,7 @@ function setBaseImageFromFile(file) {
 	originalBaseImageSrc = baseImageElement.attr('src');
 	setTimeout(() => {
 		FileUtils.getBase64(file, (base64Url) => {
-			LocalStorageUtil.addNewImageBase64Url(base64Url)
+			LocalStorageUtil.addNewImageBase64UrlUpload(base64Url)
 		})
 	}, 250)
 	onSetBaseImage()
@@ -41,7 +41,7 @@ function onSetBaseImage() {
 
 function clearBaseImage() {
 	baseImageElement.attr('src', '');
-	recreateMergedImage()
+	//recreateMergedImage()
 	toggleBaseImageDragDrop();
 	$('.js-baseImageControls').hide()
 	$('.js-overlayImageContainer').hide()
@@ -76,7 +76,7 @@ function setOverlayImageFromFile(file) {
 	
 	setTimeout(() => {
 		FileUtils.getBase64(file, (base64Url) => {
-			LocalStorageUtil.addNewImageBase64Url(base64Url)
+			LocalStorageUtil.addNewImageBase64UrlUpload(base64Url)
 		})
 	}, 250)
 	onSetOverlayImage()
@@ -145,7 +145,7 @@ function recreateMergedImage() {
 	const baseSrc =  $(baseImageElement).attr('src')
 	const overlaySrc =  $(overlayImageElement).attr('src')
 	
-	$('.js-mergeImageBase').attr('src',baseSrc);
+	$('.js-mergeImageBase').attr('src', baseSrc);
 	const width = $('.js-mergeImageBase').css('width')
 	const height = $('.js-mergeImageBase').css('height')
 	$('#merged-image-creation-canvas').css('width', width)
