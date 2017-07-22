@@ -64,6 +64,11 @@ function UnsplashSearchHandler(keywords) {
     }
 }
 
+function toggleLoadMoreButton(show) {
+    if(show) $('.js-imageSearchLoadMoreButton').show()
+    else $('.js-imageSearchLoadMoreButton').hide()
+}
+
 UnsplashSearchHandler.APP_ID = 'c2e962aba1fd8e5c013758468fa0eca18c818673a6cc81b656c32d084669ce15'
 UnsplashSearchHandler.keywordHandlersMap = {}
 UnsplashSearchHandler.lastSearchType = { 'base': {}, 'overlay': {} }
@@ -84,14 +89,17 @@ UnsplashSearchHandler.handleSearchByType = function(type, opts) {
         return
     }
     if(handler.isSearching()) {
-        $('.js-' + type + 'ImageSearchLoadMoreButton').hide()
+        toggleLoadMoreButton(false)
         return
     }
     if(!handler.canSearchMore()) {
-        $('.js-' + type + 'ImageSearchLoadMoreButton').hide()
-        return $('.js-' + type + 'ImageSearchExhausted').show()
+        toggleLoadMoreButton(false)
+        if(handler.hasResults()) {
+            return onHasExistingResults()
+        }
+        return $('.js-imageSearchExhausted').show()
     } else {
-        $('.js-' + type + 'ImageSearchExhausted').hide()
+        $('.js-imageSearchExhausted').hide()
     }
 
     var endpoint = '/service/search/image/?keywords=' + keywords
@@ -100,19 +108,23 @@ UnsplashSearchHandler.handleSearchByType = function(type, opts) {
     if(UnsplashSearchHandler.lastSearchType[type].keywords != keywords) {
         if(handler.hasResults()) {
             UnsplashSearchHandler.lastSearchType[type].wasLast = true
-            if(handler.canSearchMore()) $('.js-' + type + 'ImageSearchLoadMoreButton').show()
+            if(handler.canSearchMore()) toggleLoadMoreButton(true)
             return handler.showAllResults(type)
         }
     }
     if(!UnsplashSearchHandler.lastSearchType[type].wasLast) {
         if(handler.hasResults()) {
-            UnsplashSearchHandler.lastSearchType[type].wasLast = true
-            if(handler.canSearchMore()) $('.js-' + type + 'ImageSearchLoadMoreButton').show()
-            return handler.showAllResults(type)
+            return onHasExistingResults()
         }
     }
+
+    function onHasExistingResults() {
+        UnsplashSearchHandler.lastSearchType[type].wasLast = true
+        if(handler.canSearchMore()) toggleLoadMoreButton(true)
+        return handler.showAllResults(type)
+    }
     
-    $('.js-' + type + 'ImageSearchLoadMoreButton').hide()
+    toggleLoadMoreButton(false)
     if(handler.isSearching()) {
         return
     }
@@ -120,9 +132,7 @@ UnsplashSearchHandler.handleSearchByType = function(type, opts) {
     UnsplashSearchHandler.lastSearchType[type].keywords = keywords
     UnsplashSearchHandler.lastSearchType[type].wasLast = true
 
-    UnsplashSearchHandler.ngScope.getCurrentSearchHandler = function() {
-        return handler
-    }
+    UnsplashSearchHandler.currentHandler = handler
     $('.js-' + type + 'ImageSearchExhausted').show()
     $.get(endpoint, function(data, status) {
         if(status != "success") {
@@ -161,21 +171,11 @@ UnsplashSearchHandler.attachScope = function(ngScope, ngTimeout) {
     
     UnsplashSearchHandler.ngScope.searchImage = function(isFromKeyup) {
         runImageSearch(isFromKeyup)	
-	}
-
-	$('.js-imageSearchInput').keyup((ev) => {
-        var keycode = (ev.keyCode ? ev.keyCode : ev.which);
-        if (keycode == '13') {
-            return runImageSearch()
-        }
-
-		if(UnsplashSearchHandler.imageSearchTimeout) {
-			clearTimeout(UnsplashSearchHandler.imageSearchTimeout)
-		}
-		UnsplashSearchHandler.imageSearchTimeout = setTimeout(() => {
-			runImageSearch(true)
-		}, 1500)	
-    })
+    }
+    
+    UnsplashSearchHandler.ngScope.getCurrentSearchHandler = function() {
+        return UnsplashSearchHandler.currentHandler
+    }
 }
 
 UnsplashSearchHandler.attachSearchJQueries = function(ngScope, ngTimeout) {
@@ -185,11 +185,11 @@ UnsplashSearchHandler.attachSearchJQueries = function(ngScope, ngTimeout) {
             return runImageSearch()
         }
 
-		if(UnsplashSearchHandler.imageSearchTimeout) {
+		/*if(UnsplashSearchHandler.imageSearchTimeout) {
 			clearTimeout(UnsplashSearchHandler.imageSearchTimeout)
 		}
 		UnsplashSearchHandler.imageSearchTimeout = setTimeout(() => {
 			runImageSearch(true)
-		}, 1500)	
+		}, 1500)	*/
     })
 }
