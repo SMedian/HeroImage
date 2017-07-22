@@ -12,6 +12,7 @@
     "bootstrap": "^3.3.6",
     "cron": "^1.1.0",
     "express": "^4.13.3",
+    "request": "2.72.0",
     "jquery": "^2.2.3",
     "nodemailer": "0.7",
     "rangeslider.js": "^2.3.1",

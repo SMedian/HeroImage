@@ -17,6 +17,7 @@
     /* IE7-8 doesn't have border-radius, so don't indent the padding */
     border:none;
     margin-bottom: 0;
+    box-shadow: none !important;
 }
 
 #custom-search-input button {

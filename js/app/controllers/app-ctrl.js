@@ -4,7 +4,16 @@ angularApp
         //console.log("Got " + event.name + " Message: " + JSON.stringify(data.payload))
         var payload = data.payload;
         if (payload) {
-            $scope.numActiveClients = payload + " Active Creators";
+            $scope.numActiveClients = payload + " Active Creator" + (payload > 1? 's' : '');
+        }
+    });
+
+    const imageUrlBase64UrlMap = {}
+    $scope.$on('socket:imageUrlBase64Url', function(event, data) {
+        //console.log("Got " + event.name + " Message: " + JSON.stringify(data.payload))
+        var payload = data.payload;
+        if (payload) {
+            imageUrlBase64UrlMap[payload.imageUrl] = payload.base64Url
         }
     });
 
@@ -25,9 +34,14 @@ angularApp
        }
     }
 
+    var alreadyOpenedImageSearchFormOnce = false
     $scope.openImageSearchFormForType = function(type) {
         $scope.currentImageSearchType = type
         $scope.imageSearchFormIsOpen = true;
+        if(!alreadyOpenedImageSearchFormOnce) {
+            UnsplashSearchHandler.attachSearchJQueries($scope, $timeout)
+        }
+        alreadyOpenedImageSearchFormOnce = true
     }
 
     $scope.closeImageSearchForm = function() {
@@ -35,11 +49,12 @@ angularApp
     }
 
     $scope.handleSelectSearchResultImageForType = function(image) {
-        if($scope.currentImageSearchType == 'base') {
-            setBaseImageFromUrl(image.url)
-        } else if(type == 'overlay') {
-            setOverlayImageFromUrl(image.url)
-        }
+        const base64Url = imageUrlBase64UrlMap[image.url]
+        debugger
+        handleSelectSearchResultImageForType($scope.currentImageSearchType, {
+            url: image.url,
+            base64Url: imageUrlBase64UrlMap[image.url]
+        })
         $scope.closeImageSearchForm()
     }
 
@@ -50,6 +65,6 @@ angularApp
     }
 
     $(document).ready(function() {
-        UnsplashSearchHandler.attachSearchJQueries($scope, $timeout)
+        UnsplashSearchHandler.attachScope($scope, $timeout)
     })
 })

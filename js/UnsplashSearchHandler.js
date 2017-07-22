@@ -25,9 +25,22 @@ function UnsplashSearchHandler(keywords) {
     this.canSearchMore = () => { return vars.nextPage < vars.totalPages }
     this.hasResults = () => { return vars.results.length }
 
+    this.showAllResults = function(type) {
+        UnsplashSearchHandler.ngScopeTimeout(() => {
+            UnsplashSearchHandler.ngScope.imageSearchResultsTypeMap[type] = vars.results
+            /*$('.grid').masonry({
+                // options...
+                itemSelector: '.grid-item',
+                columnWidth: 100
+            });*/
+        })
+    }
+
     this.addResultsAndIncrementNextPage = function(type, resultsData) {
+        if(!resultsData.results) return
         vars.totalPages = resultsData.total_pages
         this.incrementNextPage()
+        
         resultsData.results.forEach((result) => {
             if(vars.resultIds[result.id]) return
             const image = {
@@ -43,9 +56,7 @@ function UnsplashSearchHandler(keywords) {
             vars.resultIds[image.id] = true
             vars.results.push(image)
         })
-        UnsplashSearchHandler.ngScopeTimeout(() => {
-            UnsplashSearchHandler.ngScope.imageSearchResultsTypeMap[type] = vars.results
-        })
+        this.showAllResults(type)
     }
 
     this.getResults = () => {
@@ -83,8 +94,7 @@ UnsplashSearchHandler.handleSearchByType = function(type, opts) {
         $('.js-' + type + 'ImageSearchExhausted').hide()
     }
 
-    var endpoint = 'https://api.unsplash.com/search/photos/?client_id=' + UnsplashSearchHandler.APP_ID
-    endpoint += '&query=' + keywords
+    var endpoint = '/service/search/image/?keywords=' + keywords
     endpoint += '&page=' + handler.getNextPage()
     
     if(UnsplashSearchHandler.lastSearchType[type].keywords != keywords) {
@@ -138,23 +148,48 @@ UnsplashSearchHandler.handleResultsFor = (type, keywords, responseData) => {
     handler.endSearch()
 }
 
-UnsplashSearchHandler.attachSearchJQueries = function(ngScope, ngTimeout) {
+function runImageSearch(isFromKeyup) {
+    UnsplashSearchHandler.handleSearchByType(UnsplashSearchHandler.ngScope.currentImageSearchType, {
+        keywords: $('.js-imageSearchInput').val(),
+        isFromKeyup: isFromKeyup
+    })
+}
+
+UnsplashSearchHandler.attachScope = function(ngScope, ngTimeout) {
     UnsplashSearchHandler.ngScope = ngScope
     UnsplashSearchHandler.ngScopeTimeout = ngTimeout
     
     UnsplashSearchHandler.ngScope.searchImage = function(isFromKeyup) {
-        UnsplashSearchHandler.handleSearchByType(UnsplashSearchHandler.ngScope.currentImageSearchType, {
-            keywords: $('.js-imageSearchInput').val(),
-            isFromKeyup: isFromKeyup
-        })	
+        runImageSearch(isFromKeyup)	
 	}
 
-	$('.js-imageSearchInput').keyup(() => {
+	$('.js-imageSearchInput').keyup((ev) => {
+        var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+        if (keycode == '13') {
+            return runImageSearch()
+        }
+
 		if(UnsplashSearchHandler.imageSearchTimeout) {
 			clearTimeout(UnsplashSearchHandler.imageSearchTimeout)
 		}
 		UnsplashSearchHandler.imageSearchTimeout = setTimeout(() => {
-			UnsplashSearchHandler.handleSearchByType(UnsplashSearchHandler.ngScope.currentImageSearchType, true)
-		}, 1000)	
-	})
+			runImageSearch(true)
+		}, 1500)	
+    })
+}
+
+UnsplashSearchHandler.attachSearchJQueries = function(ngScope, ngTimeout) {
+	$('.js-imageSearchInput').keyup((ev) => {
+        var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+        if (keycode == '13') {
+            return runImageSearch()
+        }
+
+		if(UnsplashSearchHandler.imageSearchTimeout) {
+			clearTimeout(UnsplashSearchHandler.imageSearchTimeout)
+		}
+		UnsplashSearchHandler.imageSearchTimeout = setTimeout(() => {
+			runImageSearch(true)
+		}, 1500)	
+    })
 }

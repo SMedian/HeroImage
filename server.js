@@ -142,6 +142,7 @@ function handleError(res, reason, message, code) {
 /************************END UTIL METHODS*******************/
 /************************END UTIL METHODS*******************/
 
+var request = require('request')
 
 var app = express();
 //create the path to the public files
@@ -155,13 +156,102 @@ var server = app.listen(process.env.PORT || 8585, function() {
 	io = io.listen(server);
 	startChatIO();
 	consoleLog("dbConxCallback", "App now running on port " + port);
+
+	const imageSearchEndpointCache = {}
+	const imageUrlBase64UrlMap = {}
+	const UNSPLASHIMAGEAPI_APP_ID = 'c2e962aba1fd8e5c013758468fa0eca18c818673a6cc81b656c32d084669ce15'
+	app.get('/service/search/image', function(req, res) {
+		var endpoint, keywords, page
+		try {
+			page = req.query.page
+			if(page < 1) page = 1
+
+			keywords = req.query.keywords.trim()
+			if(keywords.length < 3) {
+				return handleError(res, new Error('Minimal search keywords length is 3.'))
+			}
+
+			endpoint = 'https://api.unsplash.com/search/photos/?client_id=' + UNSPLASHIMAGEAPI_APP_ID
+			endpoint += '&query=' + keywords
+			endpoint += '&page=' + page
+		} catch(err) {
+			return handleError(res, err)
+		}
+		
+		if(imageSearchEndpointCache[endpoint]) {
+			return res.status(200).json(JSON.parse(imageSearchEndpointCache[endpoint]))
+		}
+		
+		request.get(endpoint, function (err, response, body) {
+			if(err) return handleError(res, err, 'Could not search images by keywords: ' + req.query.keywords + ' and page: ' + req.query.page)
+			imageSearchEndpointCache[endpoint] = body
+			res.status(200).json(JSON.parse(body))
+
+			cacheImageUrlBase64UrlsForSearchResults(body)
+		})
+	})
+
+	app.post('/service/convert/image/url/base64', function(req, res) {
+		getImageUrlBase64Url(req.query.url, (base64Url) => {
+			res.status(200).json({
+				base64Url: base64Url
+			})
+		}, (err) => {
+			res.status(404).json(err)
+		})
+	})
+
+	function cacheImageUrlBase64UrlsForSearchResults(body) {
+		try {
+			const results = JSON.parse(body).results
+			results.forEach((result) => {
+				const imageUrl = result.urls.regular
+				if(imageUrlBase64UrlMap[imageUrl]) {
+					broadCastImageUrlBase64Url(imageUrl, imageUrlBase64UrlMap[imageUrl])
+					return
+				}
+
+				getImageUrlBase64Url(imageUrl, (base64Url) => {
+					imageUrlBase64UrlMap[imageUrl] = base64Url
+					broadCastImageUrlBase64Url(imageUrl, base64Url)
+				}, (err) => {})
+			})
+		} catch(err) {}
+	}
+
+	function getImageUrlBase64Url(imageUrl, onSuccess, onFail) {
+			var request = require('request').defaults({ encoding: null });
+			request.get(imageUrl, function (err, response, body) {
+				if (err && onFail) return onFail(err)
+				onSuccess("data:" + response.headers["content-type"] + ";base64," + new Buffer(body).toString('base64'))
+			})
+		}
 });
 
 /*=========================================START SOCKET.IO SETUP=========================================*/
 /*=========================================START SOCKET.IO SETUP=========================================*/
 
+var broadCastImageUrlBase64Url
 function startChatIO() {
 	var numClients = 0;
+
+	broadCastImageUrlBase64Url = function(imageUrl, base64Url) {
+		try{
+		  //consoleLog("startChatIO", 'RECEIVED MESSAGE:' +  JSON.stringify(message));
+
+		  //consoleLog("startChatIO", 'broadcasting message');
+		  //send messages to clients waiting for messages on the message's publicationId
+		  io.sockets.emit('imageUrlBase64Url', {
+		    payload: {
+					imageUrl: imageUrl,
+					base64Url: base64Url
+				}
+		  });
+		  //console.log('broadcast complete to: ' + 'messagePID' + message.publicationId);
+		} catch (err) {
+			consoleLog("startChatIO", "Error occurred: " + err.message, true);
+		}
+	}
 
 	function broadcastNumClients() {
 		try{

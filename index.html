@@ -26,6 +26,8 @@
 	<link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 
+	
+
 	 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<!-- Angular lib -->
@@ -33,46 +35,43 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-route.min.js"></script>
     <!--====https://github.com/rstacruz/nprogress=====-->
 	<script src="js/libs/nprogress/nprogress.js"></script>
+
+	<script src="js/main.js"></script>
+	<script src="js/main-jqueries.js"></script>
+	<script src="js/mainUtils.js"></script>
 	
 	<!--======MASONRY=====-->
-	<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-
+	<!--[if lte IE 9]>
+		<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+	<![endif]-->
 	<!-- ================= Favicon ================== -->
     <!-- Standard -->
     <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
     <link rel="icon" href="/img/logo.png" type="image/x-icon">
 </head>
 <body>
-	<div class="row" style="background:linear-gradient(120deg,#102938 25%,#0C132B 85%); color: #fff">
-		<div style="padding:20px">
-			<div class="col-md-3">
-				<a href="//smedian.com">
-					<img src="http://smedian.com/img/logo.png" style="display:inline; width:48px; margin-top: -15px;"/>
-				</a>
-				<div style="display:inline-block;">
-					<h1 class="heading" style="display:inline; margin-top:20px; color:#fff">Hero Image Creator</h1>
-					<a href="//smedian.com" target="_blank" class="clean-text text-s link" style="display:block">A SMedian Publishing Tool</a>
-				</div>
-				
-			</div>
-			<div class="col-md-4">
-				<button id="about-this-demo-button" data-toggle="modal" data-target="#more-info-modal" class="clean-button clean-button--link" style="color:#fff">
-					Help
-				</button>
-				<button class="js-downloadMergedImageButton clean-button clean-button--link" style="color:#fff; display:none">
-					Download Final Image
-				</button>
-			</div>
+	<div ng-include="'views/parts/nav/top-main.html'"></div>
+	<!--<div class="col-md-12 mobile-only" style="background-color:#fff; position: fixed; top: 0px; z-index: 9999; width: 100%; height: 100%; overflow-y: overlay; padding-bottom: 100px; padding-left: 10px;">
+		<div ng-include="'views/parts/nav/top-main.html'"></div>
+		<div class="container" style="padding-top:10%; text-align:center;">
+			<img src="img/icon_traffic-light.svg" style="width:33%">
+			<h2 class="ct-warning">Not Accessible Via Mobile Devices</h2>
+			<p>
+				This website is not optimized for use on mobile screens.
+			</p>
+			<p>
+				Please visit this webiste on your laptop or desktop. 
+			</p>
 		</div>
-	</div>
+	</div>-->
 
 	<div ng-include="'views/parts/form/image-search.html'"></div>
 
 	<table id="table-editor" style="width:100%">
 		<tr class="container-editor">
 			<td style="width:20%; background: #272c33; color:#fff; padding:10px; vertical-align: top; position:fixed">
-				<div class="">
-					<a class="js-scrollToBaseImagePane link" style="color:#fff"><h3>Base Image</h3></a>
+				<div class="js-baseImageContainer js-scrollToBaseImagePane">
+					<a class="link" style="color:#fff"><h3>Base Image</h3></a>
 					<div class="js-baseImageChoiceControls">
 						<button class="js-clickToUploadBaseImage btn btn-primary btn-block button-panel" 
 							style="background:white; color:#0C132B; text-align:left" title="Upload an image from your computer">
@@ -116,8 +115,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="js-overlayImageContainer" style="margin-top:30px; display:none">
-					<a class="js-scrollToOverlayImagePane link" style="color:#fff"><h3>Overlay Image</h3></a>
+				<div class="js-overlayImageContainer js-scrollToOverlayImagePane" style="margin-top:30px; display:none">
+					<a class="link" style="color:#fff"><h3>Overlay Image</h3></a>
 					<div class="js-overlayImageChoiceControls">
 						<button class="js-clickToUploadOverlayImage btn btn-primary btn-block button-panel" style="background:white; color:#0C132B; text-align:left;">
 							<span class="glyphicon glyphicon-upload pull-left" style="margin-right: 5px;" aria-hidden="true"></span> Upload Image
@@ -162,8 +161,9 @@
 					</div>
 				</div>
 
-				<div class="js-mergedImageContainer" style="margin-top:30px;">
-					<a class="js-scrollToMergedImagePane link" style="color:#fff"><h3>Final Merged Image</h3></a>
+				<div class="js-mergedImageContainer js-scrollToMergedImagePane" style="margin-top:30px;">
+					<a class="link" style="color:#fff"><h3>Final Merged Image</h3></a>
+
 					<p class="clean-text ct-white text-t" style="margin-bottom:10px">This will update automatically as you edit your base and overlay images.</p>
 					<div class="js-mergedImageControls" style="display:none">
 						<div class="js-mergedImageControlOverlayContainer" style="margin-top:20px; margin-bottom:20px; display: none">
@@ -199,6 +199,7 @@
 					<p class="clean-text" style="max-width:60%">
 						Choose a base image to edit from your computer or search free stock photos. You can then add an overlay image. If you add an overlay image, you'll need to scroll down to see the final image. Once you are done, download your image to your computer.
 					</p>
+					<p class="clean-text" ng-bind="numActiveClients"></p>
 				</div>
 				<div class="js-baseImageEditorPane">
 					<h3>Base Image <span class="js-baseImageWithOverlayMark clean-text text-s" style="display:none">With Overlay</span></h3>

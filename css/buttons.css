@@ -105,6 +105,14 @@ button {
     text-decoration: none !important;
 }
 
+.clean-button--plain {
+    color:initial !important;
+    margin:0px;
+    padding: 0px !important;
+    border:none;
+    text-decoration: none !important;
+}
+
 .clean-button:hover {
   color: rgba(0,0,0,.8);
 }

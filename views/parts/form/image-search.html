@@ -1,41 +1,31 @@
+<style>
+    .masonry-grid { /* Masonry container */
+    column-count: 4;
+    column-gap: 1em;
+}
+
+.masonry-grid-item { /* Masonry bricks or child elements */
+    background-color: #eee;
+    display: inline-block;
+    margin: 0 0 1em;
+    width: 100%;
+}
+</style>
 <div ng-show="imageSearchFormIsOpen" id="add-new-item-form" class="col-md-12 u-borderBottom u-backgroundGrayLightest" 
     style="background:#fff; position: fixed; top: 0px; z-index: 99999; width: 100%; height: 100%; overflow-y: overlay; padding-bottom: 100px; padding-left: 10px;">
     <div id="new-item-action-buttons" style="border-bottom: 1px solid rgba(0,0,0,.05); background:#fff; color: white;
-        padding-top: 10px; top: 0; position: fixed; left: 0; width: 100%; text-align: center">
-        <div class="col-md-8" style="padding-top:5px; padding-bottom:5px;">
-            <button class="clean-button clean-button--plain" ng-click="closeImageSearchForm()">
-                <img class="u-size16x16" style="margin-top: -3px;" src="/img/icon_arrow_left.svg"/>
-                <span>Back to Editor</span>
-            </button>
-            <div style="float:right">
-                <button class="js-imageSearchLoadMoreButton clean-button clean-button--plain ct-l-green" style="margin-right:5px"
-                    ng-show="getCurrentSearchHandler().hasResults()" ng-click="searchImage()">
-                    <span class="ct-l-green">Load More</span>
-                </button>
-            </div>
-            <p><b>&nbsp; <span class="clean-text text-t ct-warning" ng-bind="addNewItemDataValidationError"></span></b></p>
-        </div>
-    </div>
-    
-    <div class="container" style="padding-top:10px; max-width:850px; margin-top:90px; overflow-y:scroll">
-        <ul style="list-style: none;">
-            <li>
-                <h2>
-                    Search Free Stock Images
-                    <p class="clean-text">
-                        For {{currentImageSearchType}} Image
-                    </p>
-                </h2>
-            </li>
-            <li style="margin-top:20px">
-                <div id="custom-search-input">
-                    <div class="card-content" style="padding-left:0px !important; padding-right:5px">
-                        <p class="card-description">
-                        Search for a free stock image to use as your base image.
-                        </p>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" class="js-imageSearchInput u-borderBottom clean-input search-query form-control" placeholder="Search stock images ..." 
+        padding-top: 10px; top: 0; position: fixed; left: 0; width: 100%; text-align: center; z-index: 9999;">
+        <table class="col-md-12 container" style="padding-top:5px; padding-bottom:5px;">
+            <tr>
+                <td class="col-md-3">
+                    <button class="clean-button clean-button--plain" ng-click="closeImageSearchForm()">
+                        <img class="u-size16x16" style="margin-top: -3px;" src="/img/icon_arrow_left.svg"/>
+                        <span>Back to Editor</span>
+                    </button>
+                </td>
+                <td id="custom-search-input" class="col-md-6" style="max-width:850px">
+                    <div class="input-group" style="border-right: 1px solid rgba(0,0,0,.05);">
+                        <input type="text" class="js-imageSearchInput clean-input search-query form-control" style="glow:none; border:none; outline:none" placeholder="Search stock images ..." 
                         ng-model="currentImageSearchKeywords" ng-change="searchImage(true)" autofocus/>
                         <span class="input-group-btn">
                             <button class="js-imageSearchButton btn btn-danger" type="button" ng-click="searchImage()">
@@ -43,17 +33,39 @@
                             </button>
                         </span>
                     </div>
-                </div>
+                </td>
+                <td class="clean-text">
+                    <h6>{{currentImageSearchType.substring(0,1).toUpperCase() + currentImageSearchType.substring(1)}} Image</h6>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="container" style="padding-top:10px; max-width:850px; margin-top:90px;">
+        <ul style="list-style: none;">
+            <li>
+                <h2>
+                    Search Free Stock Images
+                    <p class="clean-text card-description">
+                        Search for a free stock image to use as your {{currentImageSearchType}} image.
+                    </p>
+                </h2>
+            </li>
+            <li style="margin-top:20px">
                 <div class="js-imageSearchResults">
-                    <ul class="cards cards--bordered js-collectionResultsList grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
-                        <li class="js-imageSearchResultLI grid-item" ng-repeat="image in imageSearchResultsTypeMap[currentImageSearchType]">
-                            <img ng-src="{{image.thumbUrl}}" data-regular-url="{{image.url}}" style="width:100%; height:100%" ng-click="handleSelectSearchResultImageForType(image)"/>
-                            <a class="link text-t1 u-colorLightGrey" style="position: relative; height: 10px; width:100%; bottom:10px" href="https://unsplash.com/'+image.user.handle+'?utm_source=SMedianHeroImage&utm_medium=referral&utm_campaign=api-credit">
+                    <div class="js-collectionResultsList masonry-grid">
+                        <div class="js-imageSearchResultLI masonry-grid-item" style="" ng-repeat="image in imageSearchResultsTypeMap[currentImageSearchType]">
+                            <img ng-src="{{image.thumbUrl}}" data-regular-url="{{image.url}}" ng-click="handleSelectSearchResultImageForType(image)"/>
+                            <a class="link text-t1 u-colorLightGrey" style="display:block; padding:5px 0px 5px 0px; background: #fff" href="https://unsplash.com/'+image.user.handle+'?utm_source=SMedianHeroImage&utm_medium=referral&utm_campaign=api-credit">
                                 {{image.user.name}} / Unsplash
                             </a>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
+                <button class="js-imageSearchLoadMoreButton clean-button clean-button--plain ct-l-green" style="margin-right:5px"
+                    ng-show="getCurrentSearchHandler().hasResults()" ng-click="searchImage()">
+                    <span class="ct-l-green">Load More</span>
+                </button>
             </li>
         </ul>
     </div>

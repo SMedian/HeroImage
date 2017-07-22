@@ -82,6 +82,20 @@ function launchImageEditor(type) {
 			image: currentOverlayImage.id,
 			//url: currentImage.src
 		});
+	} else if(currentImageEditType == 'merged') {
+		if (!originalMergedImageSrc) {
+			alert('Choose base and overlay images first.');
+			return false;
+		}
+
+		// Get the image to be edited
+		// `[0]` gets the image itself, not the jQuery object
+		currentMergedImage = $('.js-mergedImageToEdit')[0];
+
+		creativeSDKImageEditor.launch({
+			image: currentMergedImage.id,
+			//url: currentImage.src
+		});
 	}
 	
 }
@@ -173,6 +187,7 @@ function recreateMergedImage() {
 	getMergedImageUrl(function(url) {
 		document.getElementById('merged-image-to-edit').innerHTML = '';
 		document.getElementById('merged-image-to-edit').src = url
+		originalMergedImageSrc = url
 		$('.js-mergedImageToEdit').show()
 	})
 }
@@ -183,13 +198,25 @@ function updateMergeImageOverlayOpacity(opacity) {
 }
 
 //=======GENEREAL FUNCTIONS
-
-function handleSelectSearchResultImageForType(type, url) {
-	if(type == 'base') {
-		setBaseImageFromUrl(url)
-	} else if(type == 'overlay') {
-		setOverlayImageFromUrl(url)
+function handleSelectSearchResultImageForType(type, data) {
+	function setImageUrl(imageUrl) {
+		if(type == 'base') {
+			setBaseImageFromUrl(imageUrl)
+		} else if(type == 'overlay') {
+			setOverlayImageFromUrl(imageUrl)
+		}
 	}
+
+	if(data.base64Url) {
+		return setImageUrl(data.base64Url)
+	}
+	$.post("service/convert/image/url/base64?url=" + data.url )
+		.then(function(response){
+			setImageUrl(response.base64URL)
+		}, function(err) {
+			console.log(JSON.stringify(err))
+		})
+	
 }
 
 // Checks if the file type is in the array of supported types
@@ -253,6 +280,7 @@ $(document).ready(function() {
 
 	attachBaseImageEditQueries()
 	attachOverlayImageEditQueries()
+	attachMergedImageEditQueries()
 
 	// Download
 	$('.js-downloadImageButton').click(function(e) {
@@ -279,6 +307,22 @@ $(document).ready(function() {
 			});
 		})
 	});
+
+	$('.js-scrollToBaseImagePane').click(function() { 
+		$('html,body').animate({
+			scrollTop: $(".js-baseImageEditorPane").offset().top
+		})
+	})
+	$('.js-scrollToOverlayImagePane').click(function() { 
+		$('html,body').animate({
+			scrollTop: $(".js-overlayImageEditorPane").offset().top
+		})
+	})
+	$('.js-scrollToMergedImagePane').click(function() { 
+		$('html,body').animate({
+			scrollTop: $(".js-mergedImageEditorPane").offset().top
+		})
+	})
 });
 
 function attachBaseImageEditQueries() {
@@ -413,5 +457,15 @@ function attachOverlayImageEditQueries() {
 		else {
 			alert("Nothing to clear in overlay image.");
 		}
+	});
+}
+
+function attachMergedImageEditQueries() {
+	// Edit
+	$('.js-editMergedImageButton').click(function() {
+		launchImageEditor('merged');
+	});
+	$('.js-mergedImageToEdit').click(function() {
+		launchImageEditor('merged');
 	});
 }
